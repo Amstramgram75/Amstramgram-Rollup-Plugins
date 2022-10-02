@@ -11,30 +11,24 @@ import { terser } from 'rollup-plugin-terser'
 //CSS
 //Here we use the es6 version of the plugin
 import cssPlugin from './amstramgramRollupPluginPostcss/index-module'
-/*
-If the plugin has been installed with npm :
-import cssPlugin from 'rollup-plugin-postcss-amstramgram'
-*/
+//If the plugin has been installed with npm :
+//import cssPlugin from 'rollup-plugin-postcss-amstramgram'
 import postcssImport from 'postcss-import'
 import postcssPresetEnv from 'postcss-preset-env'
 import cssnano from 'cssnano'
 //HTML
 //Here we use the es6 version of the plugin
 import htmlPlugin from './amstramgramRollupPluginPosthtml/index-module'
-/*
-If the plugin has been installed with npm :
-import cssPlugin from 'rollup-plugin-posthtml-amstramgram'
-*/
+//If the plugin has been installed with npm :
+//import htmlPlugin from 'rollup-plugin-posthtml-amstramgram'
 import htmlinclude from 'posthtml-include'
 import htmlnano from 'htmlnano'
 //Assets
 //Watch changes in assets and plugins folders
 //Here we use the es6 version of the watcher plugin
 import watcher from './amstramgramRollupPluginWatcher/index-module'
-/*
-If the plugin has been installed with npm :
-import watcher from 'rollup-plugin-watcher-amstramgram'
-*/
+//If the plugin has been installed with npm :
+//import watcher from 'rollup-plugin-watcher-amstramgram'
 import fsExtra from 'fs-extra'//To empty prod folder when building for production
 import copy from 'rollup-plugin-copy'//Copy assets folder from dev to prod folder
 
