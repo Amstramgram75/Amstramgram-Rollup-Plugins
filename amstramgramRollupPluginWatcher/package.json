@@ -15,7 +15,11 @@
   },
   "homepage": "https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins#readme",
   "license": "MIT",
-
+  "files": [
+    "index-common.js",
+    "index-module.js",
+    "index.d.ts"
+  ],
   "keywords": [
     "rollup",
     "rollup-plugin",
