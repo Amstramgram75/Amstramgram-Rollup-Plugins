@@ -19,8 +19,7 @@ var fg__default = /*#__PURE__*/_interopDefaultLegacy(fg);
  *        See here how to : 
  *        https://github.com/mrmlnc/fast-glob 
  *        If a string points to an existing directory, 
- *        it will be converted to a glob including all this directory files.
- *        Eg : "docs_src/js" becomes "docs_src/js/*.*"
+ *        the whole directory will be watched.
  *    @key {Boolean} verbose
  *        If set to true, output watched files to console.
  *        Default : false
@@ -76,13 +75,13 @@ var fg__default = /*#__PURE__*/_interopDefaultLegacy(fg);
       foldersToWatch.forEach(folder => {
         if (fs__default["default"].existsSync(folder)) {
           this.addWatchFile(folder);
-          if (verbose === true) console.log(`\x1b[32m\x1B[1m-- Plugin watcher-amstramgram -- : Watching ${folder}...\x1b[0m`);
+          if (verbose === true) console.log(`\x1b[32m\x1B[1m-- Plugin watcher-amstramgram -- : Watching folder ${folder}...\x1b[0m`);
         }
       });
       filesToWatch().forEach(file => {
         file = path__default["default"].resolve(file);
         this.addWatchFile(file);
-        if (verbose === true) console.log(`\x1b[32m\x1B[1m-- Plugin watcher-amstramgram -- : Watching ${file}...\x1b[0m`);
+        if (verbose === true) console.log(`\x1b[32m\x1B[1m-- Plugin watcher-amstramgram -- : Watching file ${file}...\x1b[0m`);
       });
     },
   }
