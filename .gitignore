@@ -1,0 +1,6 @@
+.vscode
+node_modules
+*.tgz
+package-lock.json
+amstramgramRollupPlugins.code-workspace
+todo.txt

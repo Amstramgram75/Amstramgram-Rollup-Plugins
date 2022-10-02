@@ -1,0 +1,119 @@
+<h2 id="installation">Installation</h2>
+<h3>npm</h3>
+<div class="code copy">
+  <pre><code class="language-shellsession">npm i -D rollup-plugin-postcss-amstramgram</code></pre>
+</div>
+<p class="text">
+  Even better with all dependencies :<br>
+</p>
+<div class="code copy">
+  <pre><code class="language-shellsession">npm i -D rollup-plugin-postcss-amstramgram postcss fast-glob</code></pre>
+</div>
+<h3>Manually</h3>
+<p class="text">
+  Just <a href="https://github.com/posthtml/posthtml" target="_blank">download the plugin</a> in a <em>amstramgramRollupPluginPostcss</em> folder located at the root of your project.<br>
+</p>
+<h3>Dependencies</h3>
+<div class="text">
+  <p>
+    If you haven't already, install <a href="https://postcss.org/" target="_blank">postcss</a>
+  </p>
+</div>
+<div class="code copy">
+  <pre><code class="language-shellsession">npm i -D postcss</code></pre>
+</div>
+<p>
+  And <a href="https://github.com/mrmlnc/fast-glob" target="_blank">fast-glob</a>
+</p>
+<div class="code copy">
+  <pre><code class="language-shellsession">npm i -D fast-glob</code></pre>
+</div>
+<h2 id="usage">Usage</h2>
+<div class="code" data-filename="rollup.config.js">
+  <pre><code class="language-js">...
+//import rollup-plugin-postcss-amstramgram from the folder where you downloaded it :
+import cssPlugin from './amstramgramRollupPluginPostcss/index-module'
+//Or if you have installed it from npm :
+//import cssPlugin from 'rollup-plugin-postcss-amstramgram'
+//import postcss plugins you want to use :
+import postcssImport from 'postcss-import'
+import postcssPresetEnv from 'postcss-preset-env'
+import cssnano from 'cssnano'
+...
+
+export default = {
+  input: 'src/js/index.js',
+  output: {
+    file: 'dist/js/index.js',
+    format: ...
+  },
+  plugins: [
+    ...
+    cssPlugin({
+      from: 'src/css',
+      to: 'dist/css',
+      sourceMap: process.env.BUILD === 'development',
+      plugins: [
+        postcssImport(),
+        postcssPresetEnv({
+          stage: 1,
+          importFrom: [
+            'src/css/common/const.css'//Needed for css custom properties
+          ]
+        }),
+        ...(process.env.BUILD === 'production' ? [cssnano()] : [])
+      ]
+    }),
+    ...
+  ]
+}</code></pre>
+</div>
+<h2 id="options">Options</h2>
+<div class="options">
+  <h5>from</h5>
+  <div>
+    <p>
+      Either a <em>String</em> or an <em>Array</em> of <em>Strings</em>.
+    </p>
+    <p>
+      Each element should be a valid <em>glob</em>, or a string pointing to an existing file or directory.<br>
+      See <a href="https://github.com/mrmlnc/fast-glob" target="_blank">here</a> how to.
+    </p>
+    <p>
+      If a string points to an existing directory, it will be converted to a glob including all of its files.<br>
+      Eg : <em>docs_src/css</em> becomes <em>docs_src/css/*.*</em><br>
+      However, only files with a <em>css</em> extension will be processed.
+    </p>
+    <p>
+      Note also that all directories listed here will be watched if the <em>watch</em> option is set to <em>true</em> or not explicitly set to <em>false</em> while rollup is in watch mode&nbsp;: this way, <em>Rollup</em> will rebuild each time a new <em>css</em> file is created in those directories.
+    </p>
+  </div>
+  <h5>to</h5>
+  <div>
+    <p>
+      A <em>String</em> pointing to the destination directory.
+    </p>
+  </div>
+  <h5>plugins</h5>
+  <div>
+    <p>
+      An <em>Array</em> of <a href="https://github.com/postcss/postcss/blob/main/docs/plugins.md" target="_blank">postcss plugins</a>.
+    </p>
+  </div>
+  <h5>sourceMap</h5>
+  <div>
+    <p>
+      A <em>Boolean</em> indicating whether to generate a <em>sourcemap</em>.<br>
+      If omitted, it follows the <em>rollup watchMode</em>.
+    </p>
+  </div>
+  <h5>watch</h5>
+  <div>
+    <p>
+      A <em>Boolean</em> indicating whether the processed files and their dependencies should be watched.<br>
+      If omitted, it follows the <em>rollup watchMode</em>.
+    </p>
+  </div>
+</div>
+<p>
+</p>

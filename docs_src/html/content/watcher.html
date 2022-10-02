@@ -1,0 +1,66 @@
+<h2 id="installation">Installation</h2>
+<h3>npm</h3>
+<div class="code copy">
+  <pre><code class="language-shellsession">npm i -D rollup-plugin-watcher-amstramgram</code></pre>
+</div>
+<p class="text">
+  Even better with fast-glob :<br>
+</p>
+<div class="code copy">
+  <pre><code class="language-shellsession">npm i -D rollup-plugin-watcher-amstramgram fast-glob</code></pre>
+</div>
+<h3>Manually</h3>
+<p class="text">
+  Just <a href="https://github.com/posthtml/posthtml" target="_blank">download the plugin</a> in a <em>amstramgramRollupPluginWatcher</em> folder located at the root of your project.<br>
+</p>
+<h3>Dependencies</h3>
+<p class="text">
+  If you haven't already, install <a href="https://github.com/mrmlnc/fast-glob" target="_blank">fast-glob</a>.
+</p>
+<div class="code copy">
+  <pre><code class="language-shellsession">npm i -D fast-glob</code></pre>
+</div>
+<h2 id="usage">Usage</h2>
+<div class="code" data-filename="rollup.config.js">
+  <pre><code class="language-js">...
+//import rollup-plugin-watcher-amstramgram from the folder where you downloaded it :
+import watcher from './amstramgramRollupPluginWatcher/index-module'
+//Or if you have installed it from npm :
+//import watcher from 'rollup-plugin-watcher-amstramgram'
+...
+
+export default = {
+  input: 'src/js/index.js',
+  output: {
+    file: 'dist/js/index.js',
+    format: ...
+  },
+  plugins: [
+    ...
+    watcher( {
+      files: 'dev/assets',
+      verbose: true
+    }),
+    ...
+  ]
+}</code></pre>
+</div>
+<h2 id="options">Options</h2>
+<div class="options">
+  <h5>files</h5>
+  <div>
+    <p>
+      Either a <em>String</em> or an <em>Array</em> of <em>Strings</em>.
+    </p>
+    <p>
+      Each element should be a valid <em>glob</em>, or a string pointing to an existing file or directory.<br>
+      See <a href="https://github.com/mrmlnc/fast-glob" target="_blank">here</a> how to.
+    </p>
+  </div>
+  <h5>verbose</h5>
+  <div>
+    <p>
+      A <em>Boolean</em> indicating whether to output infos in console (default to <em>false</em>).
+    </p>
+  </div>
+</div>

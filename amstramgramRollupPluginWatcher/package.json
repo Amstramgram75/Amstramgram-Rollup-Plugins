@@ -1,0 +1,28 @@
+{
+  "name": "rollup-plugin-watcher-amstramgram",
+  "version": "1.0.0",
+  "description": "Rollup plugin to watch everything you want",
+  "main": "index-common.js",
+  "module": "index-module.js",
+  "types": "index.d.ts",
+  "author": "Amstramgram <contact@onfaitdessites.fr>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins/issues"
+  },
+  "homepage": "https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins#readme",
+  "license": "MIT",
+
+  "keywords": [
+    "rollup",
+    "rollup-plugin",
+    "watch",
+    "watcher"
+  ],
+  "dependencies": {
+    "fast-glob": "^3.2.11"
+  }
+}
