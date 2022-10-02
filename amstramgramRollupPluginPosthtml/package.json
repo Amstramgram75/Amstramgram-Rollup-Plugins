@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-posthtml-amstramgram",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Rollup plugin to process external html files with posthtml",
   "main": "index-common.js",
   "module": "index-module.js",

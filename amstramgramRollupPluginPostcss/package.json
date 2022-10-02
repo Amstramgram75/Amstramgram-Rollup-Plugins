@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-postcss-amstramgram",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Rollup plugin to process external css files with postcss",
   "main": "index-common.js",
   "module": "index-module.js",
