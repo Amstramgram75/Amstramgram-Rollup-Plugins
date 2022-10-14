@@ -6,7 +6,16 @@ var serialize = require('serialize-javascript');
 var module$1 = require('module');
 
 var indexModule = (userOptions = {})  => {
-  console.log(userOptions);
+  if (userOptions.sourceMap != null) {
+    throw Error(
+      "sourceMap option is removed. Now it is inferred from rollup options."
+    );
+  }
+  if (userOptions.sourcemap != null) {
+    throw Error(
+      "sourcemap option is removed. Now it is inferred from rollup options."
+    );
+  }
   return {
     name: "terser",
 
