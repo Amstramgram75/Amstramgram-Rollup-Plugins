@@ -1,5 +1,6 @@
 import fs from "fs"
 import path from "path"
+import { fileURLToPath } from 'url'
 import fg from "fast-glob"
 import PostHTML from 'posthtml'
 
@@ -23,6 +24,8 @@ import PostHTML from 'posthtml'
  */
 export default (options = {}) => {
   let { from, to, plugins = [], watch } = options
+
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
   //If necessary, convert from option to Array
   if (typeof from === 'string') {

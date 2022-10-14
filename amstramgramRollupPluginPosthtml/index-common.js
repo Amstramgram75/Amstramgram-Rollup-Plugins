@@ -2,15 +2,9 @@
 
 var fs = require('fs');
 var path = require('path');
+var url = require('url');
 var fg = require('fast-glob');
 var PostHTML = require('posthtml');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
-var fg__default = /*#__PURE__*/_interopDefaultLegacy(fg);
-var PostHTML__default = /*#__PURE__*/_interopDefaultLegacy(PostHTML);
 
 /**
  * 
@@ -33,6 +27,8 @@ var PostHTML__default = /*#__PURE__*/_interopDefaultLegacy(PostHTML);
 var indexModule = (options = {}) => {
   let { from, to, plugins = [], watch } = options;
 
+  const __dirname = path.dirname(url.fileURLToPath((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('index-common.js', document.baseURI).href))));
+
   //If necessary, convert from option to Array
   if (typeof from === 'string') {
     from = [from];
@@ -47,7 +43,7 @@ var indexModule = (options = {}) => {
     console.log(`\x1b[31m\x1B[1m!!! Plugin posthtml-amstramgram ERROR !!!: Option to must be a STRING...\x1b[0m`);
     return
   }
-  to = path__default["default"].resolve(to);
+  to = path.resolve(to);
 
   if (plugins.length === 0) {
     console.log(`\x1b[31m\x1B[1m!!! Plugin posthtml-amstramgram ERROR !!!: You did not set any plugins : PostHTML does nothing...\x1b[0m`);
@@ -59,25 +55,25 @@ var indexModule = (options = {}) => {
     foldersToWatch = new Set();
 
   from.forEach(src => {
-    src = path__default["default"].resolve(src);
+    src = path.resolve(src);
     //If src points to an existing directory (eg: docs_src or docs_src\)
-    if (fs__default["default"].existsSync(src) && fs__default["default"].lstatSync(src).isDirectory()) {
+    if (fs.existsSync(src) && fs.lstatSync(src).isDirectory()) {
       //If omitted, add a path separator at the end (docs_src becomes docs_src\
-      if (src.substr(src.length - 1) != path__default["default"].sep) src += path__default["default"].sep;
+      if (src.substr(src.length - 1) != path.sep) src += path.sep;
       //Add the folder to foldersToWatch
       foldersToWatch.add(src);
       //Add a joker to select all files (docs_src\ becomes docs_src\*.*)
       src += '*.*';
     }
     //Replace path separator with / (docs_src\*.* becomes docs_src/*.*)
-    src = src.split(path__default["default"].sep).join('/');
+    src = src.split(path.sep).join('/');
     //Append to glob array
     glob.push(src);
   });
 
   //Build the array of files to process from the resulting glob and filter it to keep only html files
   const filesToProcess = _ => {
-    const filesToProcess = fg__default["default"].sync(glob, { absolute: true, onlyFiles: true, dot: true, unique: true }).filter(file => path__default["default"].extname(file).toLowerCase() == '.htm' || path__default["default"].extname(file).toLowerCase() == '.html');
+    const filesToProcess = fg.sync(glob, { absolute: true, onlyFiles: true, dot: true, unique: true }).filter(file => path.extname(file).toLowerCase() == '.htm' || path.extname(file).toLowerCase() == '.html');
     if (filesToProcess.length == 0) {
       console.log(`\x1b[33m\x1B[1m??? Plugin posthtml-amstramgram WARNING ???: No html file to process...\x1b[0m`);
     }
@@ -108,20 +104,20 @@ var indexModule = (options = {}) => {
       filesToEmit.clear();
 
       await Promise.all(filesToProcess().map(async (src) => {
-        src = path__default["default"].resolve(src);
+        src = path.resolve(src);
         const
-          srcRelative = path__default["default"].relative(__dirname, src),
-          dest = to + path__default["default"].sep + path__default["default"].basename(src);
+          srcRelative = path.relative(__dirname, src),
+          dest = to + path.sep + path.basename(src);
 
         if (watch) this.addWatchFile(src);
 
         //Read file content
-        const fileContent = await fs__default["default"].promises.readFile(src, "utf-8").catch(error => {
+        const fileContent = await fs.promises.readFile(src, "utf-8").catch(error => {
           console.log(`\x1b[31m\x1B[1m!!! Plugin posthtml-amstramgram ERROR !!!: unable to read ${srcRelative} file - ${error}\x1b[0m...`);
         });
 
         //Processing
-        const result = await PostHTML__default["default"](plugins)
+        const result = await PostHTML(plugins)
           .process(fileContent, { from: src, to: dest })
           .catch((error) => {
             console.log(`\x1b[31m\x1B[1m!!! Plugin posthtml-amstramgram ERROR !!!: ${error.message}\x1b[0m...`);
@@ -131,7 +127,7 @@ var indexModule = (options = {}) => {
           if (Array.isArray(result.messages) && result.messages.length > 0) {
             result.messages
               .filter(msg => msg.hasOwnProperty('type') && msg.type == 'dependency' && msg.hasOwnProperty('file'))
-              .forEach(msg => { if (watch) this.addWatchFile(path__default["default"].resolve(msg.file)); });
+              .forEach(msg => { if (watch) this.addWatchFile(path.resolve(msg.file)); });
           }
           filesToEmit.set(src, result);
         } else {
@@ -143,16 +139,16 @@ var indexModule = (options = {}) => {
     },
     async generateBundle() {
       //Create destination directory
-      await fs__default["default"].promises.mkdir(to, { recursive: true }).catch(error => {
+      await fs.promises.mkdir(to, { recursive: true }).catch(error => {
         console.log(`\x1b[31m\x1B[1m!!! Plugin posthtml-amstramgram ERROR !!!: Fail to create ${to} directory - ${error}\x1b[0m...`);
       });
       filesToEmit.forEach((result, src) => {
         const
-          srcRelative = path__default["default"].relative(__dirname, src),
-          dest = to + path__default["default"].sep + path__default["default"].basename(src),
-          destRelative = path__default["default"].relative(__dirname, dest);
+          srcRelative = path.relative(__dirname, src),
+          dest = to + path.sep + path.basename(src),
+          destRelative = path.relative(__dirname, dest);
         //Write the result
-        fs__default["default"].writeFile(dest, result.html, error => {
+        fs.writeFile(dest, result.html, error => {
           if (error) {
             console.log(`\x1b[31m\x1B[1m!!! Plugin posthtml-amstramgram ERROR !!!: Unable to write ${destRelative} file\x1b[0m...`);
           } else {

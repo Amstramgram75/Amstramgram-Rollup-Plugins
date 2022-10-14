@@ -78,8 +78,9 @@
   <div class="aside">
     <ul class="menu">
       <li><a href="index.html">INTRODUCTION</a></li>
-      <li><a href="html.html">POSTHTML</a></li>
       <li><a href="css.html">POSTCSS</a></li>
+      <li><a href="html.html">POSTHTML</a></li>
+      <li><a href="terser.html">TERSER</a></li>
       <li><a href="watcher.html">WATCHER</a></li>
     </ul>
   <label class="menu-icon" for="menu-btn"><span></span></label>
@@ -121,7 +122,7 @@
     <li><span class="bold orange">prod</span></li>
     <li><span class="bold orange">src</span></li>
     <li>package.json</li>
-    <li>rollup.config.js</li>
+    <li>rollup.config.mjs</li>
   </ul>
 </div>
 <p class="text">
@@ -141,13 +142,14 @@
   <ul>
     <li><span class="bold orange">amstramgramRollupPluginPostcss</span></li>
     <li><span class="bold orange">amstramgramRollupPluginPosthtml</span></li>
+    <li><span class="bold orange">amstramgramRollupPluginTerser</span></li>
     <li><span class="bold orange">amstramgramRollupPluginWatcher</span></li>
     <li><span class="bold orange">docs</span></li>
     <li><span class="bold orange">docs_dev</span></li>
     <li><span class="bold orange">docs_src</span></li>
     <li><span class="bold orange">node_modules</span></li>
     <li>package.json</li>
-    <li>rollup.config.js</li>
+    <li>rollup.config.mjs</li>
   </ul>
 </div>
 <p class="text">
@@ -184,6 +186,7 @@
             <li>css.html</li>
             <li>html.html</li>
             <li>index.html</li>
+            <li>terser.html</li>
             <li>watcher.html</li>
           </ul>
         </li>
@@ -210,6 +213,7 @@
     <li>error.html</li>
     <li>html.html</li>
     <li>index.html</li>
+    <li>terser.html</li>
     <li>watcher.html</li>
   </ul>
 </div>
@@ -296,7 +300,7 @@
     The <em>browserslist</em> entry of <em>package.json</em> is used by <em>@babel/preset-env</em> and <em>postcss-preset-env</em>.
   </p>
 </div>
-<div class="code copy" data-filename="rollup.config.js">
+<div class="code copy" data-filename="rollup.config.mjs">
 <pre><code class="language-js">//noderesolve and commonjs are needed for prism.js
 import noderesolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
@@ -305,30 +309,35 @@ import serve from 'rollup-plugin-serve'
 import livereload from 'rollup-plugin-livereload'
 //JS
 import babel from '@rollup/plugin-babel'
-import { terser } from 'rollup-plugin-terser'
+//Here we use the es6 version of the plugin
+import terser from './amstramgramRollupPluginTerser/index-module.mjs'
+//If the plugin has been installed from npm :
+// import terser from 'rollup-plugin-terser-amstramgram'
 //CSS
 //Here we use the es6 version of the plugin
-import cssPlugin from './amstramgramRollupPluginPostcss/index-module'
-//If the plugin has been installed with npm :
-//import cssPlugin from 'rollup-plugin-postcss-amstramgram'
+import cssPlugin from './amstramgramRollupPluginPostcss/index-module.mjs'
+//If the plugin has been installed from npm :
+// import cssPlugin from 'rollup-plugin-postcss-amstramgram'
 import postcssImport from 'postcss-import'
 import postcssPresetEnv from 'postcss-preset-env'
 import cssnano from 'cssnano'
 //HTML
 //Here we use the es6 version of the plugin
-import htmlPlugin from './amstramgramRollupPluginPosthtml/index-module'
-//If the plugin has been installed with npm :
-//import htmlPlugin from 'rollup-plugin-posthtml-amstramgram'
+import htmlPlugin from './amstramgramRollupPluginPosthtml/index-module.mjs'
+// If the plugin has been installed from npm :
+// import htmlPlugin from 'rollup-plugin-posthtml-amstramgram'
 import htmlinclude from 'posthtml-include'
 import htmlnano from 'htmlnano'
 //Assets
 //Watch changes in assets and plugins folders
 //Here we use the es6 version of the watcher plugin
-import watcher from './amstramgramRollupPluginWatcher/index-module'
-//If the plugin has been installed with npm :
-//import watcher from 'rollup-plugin-watcher-amstramgram'
+import watcher from './amstramgramRollupPluginWatcher/index-module.mjs'
+//If the plugin has been installed from npm :
+// import watcher from 'rollup-plugin-watcher-amstramgram'
 import fsExtra from 'fs-extra'//To empty prod folder when building for production
 import copy from 'rollup-plugin-copy'//Copy assets folder from dev to prod folder
+//To update Plugins package.json version to that defined in the main package.json
+import editJSON from "edit-json-file"
 
 
 const
@@ -336,7 +345,7 @@ const
   dev = 'docs_dev/',
   prod = 'docs/',
   dest = process.env.BUILD === 'development' ? dev : prod,
-  pluginsFolders = ['Postcss', 'Posthtml', 'Watcher'].map(name => `amstramgramRollupPlugin${name}`),
+  pluginsFolders = ['Postcss', 'Posthtml', 'Watcher', 'Terser'].map(name => `amstramgramRollupPlugin${name}`),
   //Babel basic configuration
   babelModule = {
     babelHelpers: 'bundled',
@@ -365,8 +374,17 @@ const
     ],
   }, babelModule)
 
-//Clean production directory before production build
-if (process.env.BUILD === 'production') fsExtra.emptyDirSync(prod)
+if (process.env.BUILD === 'production') {
+  //Set plugins version equals to that defined in main package.json
+  const version = process.env.npm_package_version
+  pluginsFolders.forEach(folder => {
+    const file = editJSON(`${folder}/package.json`)
+    file.set("version", version)
+    file.save()
+  })
+  //Clean production directory before production build
+  fsExtra.emptyDirSync(prod)
+}
 
 //FIRST ROLLUP TASK :
 //- bundle js in a module
@@ -374,7 +392,7 @@ if (process.env.BUILD === 'production') fsExtra.emptyDirSync(prod)
 //- compile css with minification if in production
 //- compile html with minification if in production
 //- launch server with livereload if in development
-//- copy assets and minify js if in production
+//- copy assets if in production
 const moduleExport = {
   input: `${src}js/index.js`,
   output: {
@@ -424,6 +442,8 @@ const moduleExport = {
           files: [`${dev}assets`, ...pluginsFolders],
           verbose: true
         }),
+        //Minify
+        terser()
       ]
       :
       [//Copy assets folder
@@ -431,9 +451,7 @@ const moduleExport = {
           targets: [
             { src: `${dev}assets`, dest: prod }
           ]
-        }),
-        //and minify
-        terser()
+        })
       ]
     )
   ],
@@ -448,14 +466,15 @@ const noModuleExport = {
   input: `${src}js/index.js`,
   output: {
     file: `${dest}js/noModule/index.js`,
-    format: 'iife'
+    format: 'iife',
+    sourcemap: process.env.BUILD === 'development',
   },
   plugins: [
     //noderesolve and commonjs are needed for prism.js
     noderesolve(),
     commonjs(),
     babel(babelNoModule),
-    ...(process.env.BUILD === 'production' ? [terser()] : [])
+    terser()
   ]
 }
 
@@ -464,10 +483,11 @@ const polyfillExport = {
   input: `${src}js/polyfills/polyfill.js`,
   output: {
     file: `${dest}js/polyfills/polyfill.js`,
-    format: 'iife'
+    format: 'iife',
+    sourcemap: process.env.BUILD === 'development',
   },
   plugins: [
-    ...(process.env.BUILD === 'production' ? [terser()] : [])
+    terser()
   ]
 }
 
@@ -475,13 +495,13 @@ const polyfillExport = {
 const pluginsExport = []
 pluginsFolders.forEach(folder => {
   pluginsExport.push({
-    input: `${folder}/index-module.js`,
-    external: ['fs', 'path', 'fast-glob', 'postcss', 'posthtml'],
+    input: `${folder}/index-module.mjs`,
+    external: ['fs', 'path', 'url', 'fast-glob', 'postcss', 'posthtml', '@babel/code-frame', 'jest-worker', 'serialize-javascript', 'module'],
     output: {
       file: `${folder}/index-common.js`,
       exports: "auto",
       format: 'cjs',
-    },
+    }
   })
 })
 
@@ -504,8 +524,8 @@ export default [moduleExport, noModuleExport, polyfillExport, ...(process.env.BU
   <div class="code copy" data-filename="package.json">
 <pre><code class="language-json">{
   "name": "amstramgram-rollup-plugins",
-  "version": "1.0.0",
-  "description": "CSS, HTML and WATCHER plugins for Rollup.js. A technique to design a website with rollup.js",
+  "version": "1.0.3",
+  "description": "CSS, HTML, TERSER and WATCHER plugins for Rollup.js. A technique to design a website with rollup.js",
   "author": "Amstramgram <contact@onfaitdessites.fr>",
   "repository": {
     "type": "git",
@@ -521,27 +541,30 @@ export default [moduleExport, noModuleExport, polyfillExport, ...(process.env.BU
     "prod": "rollup -c --environment BUILD:production"
   },
   "devDependencies": {
+    "@babel/code-frame": "^7.18.6",
     "@babel/preset-env": "^7.19.0",
-    "@rollup/plugin-babel": "^5.3.1",
-    "@rollup/plugin-commonjs": "^22.0.2",
-    "@rollup/plugin-node-resolve": "^14.1.0",
+    "@rollup/plugin-babel": "^6.0.0",
+    "@rollup/plugin-commonjs": "^23.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
     "babel-plugin-prismjs": "^2.1.0",
     "core-js": "^3.25.1",
     "cssnano": "^5.1.13",
+    "edit-json-file": "^1.7.0",
     "fast-glob": "^3.2.11",
     "fs-extra": "^10.1.0",
     "htmlnano": "^2.0.2",
+    "jest-worker": "^29.1.2",
     "postcss": "^8.4.16",
     "postcss-import": "^15.0.0",
     "postcss-preset-env": "^7.8.0",
     "posthtml": "^0.16.6",
     "posthtml-include": "^1.7.4",
     "prismjs": "^1.29.0",
-    "rollup": "^2.79.1",
+    "rollup": "^3.1.0",
     "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^2.0.1",
-    "rollup-plugin-terser": "^7.0.2",
+    "serialize-javascript": "^6.0.0",
     "terser": "^5.15.0"
   },
   "browserslist": [
@@ -550,7 +573,7 @@ export default [moduleExport, noModuleExport, polyfillExport, ...(process.env.BU
     "Safari >= 9"
   ]
 }</contact@onfaitdessites.fr></code></pre>
-  </div>
+</div>
 		</div>
 	</div>
 	<div class="up"></div>

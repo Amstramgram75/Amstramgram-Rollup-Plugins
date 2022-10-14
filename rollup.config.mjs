@@ -6,30 +6,35 @@ import serve from 'rollup-plugin-serve'
 import livereload from 'rollup-plugin-livereload'
 //JS
 import babel from '@rollup/plugin-babel'
-import { terser } from 'rollup-plugin-terser'
+//Here we use the es6 version of the plugin
+import terser from './amstramgramRollupPluginTerser/index-module.mjs'
+//If the plugin has been installed from npm :
+// import terser from 'rollup-plugin-terser-amstramgram'
 //CSS
 //Here we use the es6 version of the plugin
-import cssPlugin from './amstramgramRollupPluginPostcss/index-module'
-//If the plugin has been installed with npm :
-//import cssPlugin from 'rollup-plugin-postcss-amstramgram'
+import cssPlugin from './amstramgramRollupPluginPostcss/index-module.mjs'
+//If the plugin has been installed from npm :
+// import cssPlugin from 'rollup-plugin-postcss-amstramgram'
 import postcssImport from 'postcss-import'
 import postcssPresetEnv from 'postcss-preset-env'
 import cssnano from 'cssnano'
 //HTML
 //Here we use the es6 version of the plugin
-import htmlPlugin from './amstramgramRollupPluginPosthtml/index-module'
-// If the plugin has been installed with npm :
+import htmlPlugin from './amstramgramRollupPluginPosthtml/index-module.mjs'
+// If the plugin has been installed from npm :
 // import htmlPlugin from 'rollup-plugin-posthtml-amstramgram'
 import htmlinclude from 'posthtml-include'
 import htmlnano from 'htmlnano'
 //Assets
 //Watch changes in assets and plugins folders
 //Here we use the es6 version of the watcher plugin
-import watcher from './amstramgramRollupPluginWatcher/index-module'
-//If the plugin has been installed with npm :
-//import watcher from 'rollup-plugin-watcher-amstramgram'
+import watcher from './amstramgramRollupPluginWatcher/index-module.mjs'
+//If the plugin has been installed from npm :
+// import watcher from 'rollup-plugin-watcher-amstramgram'
 import fsExtra from 'fs-extra'//To empty prod folder when building for production
 import copy from 'rollup-plugin-copy'//Copy assets folder from dev to prod folder
+//To update Plugins package.json version to that defined in the main package.json
+import editJSON from "edit-json-file"
 
 
 const
@@ -37,7 +42,7 @@ const
   dev = 'docs_dev/',
   prod = 'docs/',
   dest = process.env.BUILD === 'development' ? dev : prod,
-  pluginsFolders = ['Postcss', 'Posthtml', 'Watcher'].map(name => `amstramgramRollupPlugin${name}`),
+  pluginsFolders = ['Postcss', 'Posthtml', 'Watcher', 'Terser'].map(name => `amstramgramRollupPlugin${name}`),
   //Babel basic configuration
   babelModule = {
     babelHelpers: 'bundled',
@@ -66,8 +71,17 @@ const
     ],
   }, babelModule)
 
-//Clean production directory before production build
-if (process.env.BUILD === 'production') fsExtra.emptyDirSync(prod)
+if (process.env.BUILD === 'production') {
+  //Set plugins version equals to that defined in main package.json
+  const version = process.env.npm_package_version
+  pluginsFolders.forEach(folder => {
+    const file = editJSON(`${folder}/package.json`)
+    file.set("version", version)
+    file.save()
+  })
+  //Clean production directory before production build
+  fsExtra.emptyDirSync(prod)
+}
 
 //FIRST ROLLUP TASK :
 //- bundle js in a module
@@ -75,7 +89,7 @@ if (process.env.BUILD === 'production') fsExtra.emptyDirSync(prod)
 //- compile css with minification if in production
 //- compile html with minification if in production
 //- launch server with livereload if in development
-//- copy assets and minify js if in production
+//- copy assets if in production
 const moduleExport = {
   input: `${src}js/index.js`,
   output: {
@@ -125,6 +139,8 @@ const moduleExport = {
           files: [`${dev}assets`, ...pluginsFolders],
           verbose: true
         }),
+        //Minify
+        terser()
       ]
       :
       [//Copy assets folder
@@ -132,9 +148,7 @@ const moduleExport = {
           targets: [
             { src: `${dev}assets`, dest: prod }
           ]
-        }),
-        //and minify
-        terser()
+        })
       ]
     )
   ],
@@ -149,14 +163,15 @@ const noModuleExport = {
   input: `${src}js/index.js`,
   output: {
     file: `${dest}js/noModule/index.js`,
-    format: 'iife'
+    format: 'iife',
+    sourcemap: process.env.BUILD === 'development',
   },
   plugins: [
     //noderesolve and commonjs are needed for prism.js
     noderesolve(),
     commonjs(),
     babel(babelNoModule),
-    ...(process.env.BUILD === 'production' ? [terser()] : [])
+    terser()
   ]
 }
 
@@ -165,10 +180,11 @@ const polyfillExport = {
   input: `${src}js/polyfills/polyfill.js`,
   output: {
     file: `${dest}js/polyfills/polyfill.js`,
-    format: 'iife'
+    format: 'iife',
+    sourcemap: process.env.BUILD === 'development',
   },
   plugins: [
-    ...(process.env.BUILD === 'production' ? [terser()] : [])
+    terser()
   ]
 }
 
@@ -176,13 +192,13 @@ const polyfillExport = {
 const pluginsExport = []
 pluginsFolders.forEach(folder => {
   pluginsExport.push({
-    input: `${folder}/index-module.js`,
-    external: ['fs', 'path', 'fast-glob', 'postcss', 'posthtml'],
+    input: `${folder}/index-module.mjs`,
+    external: ['fs', 'path', 'url', 'fast-glob', 'postcss', 'posthtml', '@babel/code-frame', 'jest-worker', 'serialize-javascript', 'module'],
     output: {
       file: `${folder}/index-common.js`,
       exports: "auto",
       format: 'cjs',
-    },
+    }
   })
 })
 

@@ -3,19 +3,13 @@
 <div class="code copy">
   <pre><code class="language-shellsession">npm i -D rollup-plugin-watcher-amstramgram</code></pre>
 </div>
-<p class="text">
-  Even better with fast-glob :<br>
-</p>
-<div class="code copy">
-  <pre><code class="language-shellsession">npm i -D rollup-plugin-watcher-amstramgram fast-glob</code></pre>
-</div>
 <h3>Manually</h3>
 <p class="text">
-  Just <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins/blob/master/amstramgramRollupPluginWatcher/index-module.js" target="_blank">download the plugin</a> in a <em>amstramgramRollupPluginWatcher</em> folder located at the root of your project.<br>
+  <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins/blob/master/amstramgramRollupPluginWatcher/index-module.js" target="_blank">Download the plugin</a> in a <em>amstramgramRollupPluginWatcher</em> folder located at the root of your project.<br>
 </p>
 <h3>Dependencies</h3>
 <p class="text">
-  If you haven't already, install <a href="https://github.com/mrmlnc/fast-glob" target="_blank">fast-glob</a>.
+  If you have chosen the manual way, install also <a href="https://github.com/mrmlnc/fast-glob" target="_blank">fast-glob</a>.
 </p>
 <div class="code copy">
   <pre><code class="language-shellsession">npm i -D fast-glob</code></pre>
@@ -24,7 +18,7 @@
 <div class="code" data-filename="rollup.config.js">
   <pre><code class="language-js">...
 //import rollup-plugin-watcher-amstramgram from the folder where you downloaded it :
-import watcher from './amstramgramRollupPluginWatcher/index-module'
+import watcher from './amstramgramRollupPluginWatcher/index-module.mjs'
 //Or if you have installed it from npm :
 //import watcher from 'rollup-plugin-watcher-amstramgram'
 ...

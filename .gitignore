@@ -1,6 +1,10 @@
+*.code-workspace
 .vscode
 node_modules
+docs_dev/*
+!docs_dev/assets
+bu
+work
 *.tgz
 package-lock.json
-amstramgramRollupPlugins.code-workspace
 todo.txt

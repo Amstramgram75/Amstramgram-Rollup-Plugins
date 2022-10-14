@@ -2,15 +2,9 @@
 
 var fs = require('fs');
 var path = require('path');
+var url = require('url');
 var fg = require('fast-glob');
 var postcss = require('postcss');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
-var fg__default = /*#__PURE__*/_interopDefaultLegacy(fg);
-var postcss__default = /*#__PURE__*/_interopDefaultLegacy(postcss);
 
 /**
  * 
@@ -35,6 +29,9 @@ var postcss__default = /*#__PURE__*/_interopDefaultLegacy(postcss);
 var indexModule = (options = {}) => {
   let { from, to, plugins = [], sourceMap, watch } = options;
 
+  const __dirname = path.dirname(url.fileURLToPath((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('index-common.js', document.baseURI).href))));
+
+
   //If necessary, convert from option to Array
   if (typeof from === 'string') {
     from = [from];
@@ -49,7 +46,7 @@ var indexModule = (options = {}) => {
     console.log(`\x1b[31m\x1B[1m!!! Plugin postcss-amstramgram ERROR !!!: Option to must be a STRING...\x1b[0m`);
     return
   }
-  to = path__default["default"].resolve(to);
+  to = path.resolve(to);
 
   if (plugins.length === 0) {
     console.log(`\x1b[31m\x1B[1m!!! Plugin postcss-amstramgram ERROR !!!: You did not set any plugins : PostCSS does nothing...\x1b[0m`);
@@ -61,18 +58,18 @@ var indexModule = (options = {}) => {
     foldersToWatch = new Set();
 
   from.forEach(src => {
-    src = path__default["default"].resolve(src);
+    src = path.resolve(src);
     //If src points to an existing directory (eg: docs_src\js or docs_src\js\)
-    if (fs__default["default"].existsSync(src) && fs__default["default"].lstatSync(src).isDirectory()) {
+    if (fs.existsSync(src) && fs.lstatSync(src).isDirectory()) {
       //If omitted, add a path separator at the end (docs_src\js becomes docs_src\js\)
-      if (src.substr(src.length - 1) != path__default["default"].sep) src += path__default["default"].sep;
+      if (src.substr(src.length - 1) != path.sep) src += path.sep;
       //Add the folder to foldersToWatch
       foldersToWatch.add(src);
       //Add a joker to select all files (docs_src\js\ becomes docs_src\js\*.*)
       src += '*.*';
     }
     //Replace path separator with / (docs_src\js\*.* becomes docs_src/js/*.*)
-    src = src.split(path__default["default"].sep).join('/');
+    src = src.split(path.sep).join('/');
     //Append to glob array
     glob.push(src);
   });
@@ -80,7 +77,7 @@ var indexModule = (options = {}) => {
   //Build the array of files to process from the resulting glob
   const filesToProcess = _ => {
     //Get the array of files given by fast-glob and filter it to keep only html files
-    const filesToProcess = fg__default["default"].sync(glob, { absolute: true, onlyFiles: true, dot: true, unique: true }).filter(file => path__default["default"].extname(file).toLowerCase() == '.css');
+    const filesToProcess = fg.sync(glob, { absolute: true, onlyFiles: true, dot: true, unique: true }).filter(file => path.extname(file).toLowerCase() == '.css');
     if (filesToProcess.length == 0) {
       console.log(`\x1b[33m\x1B[1m??? Plugin postcss-amstramgram WARNING ???: No css file to process...\x1b[0m`);
     }
@@ -113,23 +110,23 @@ var indexModule = (options = {}) => {
       filesToEmit.clear();
 
       await Promise.all(filesToProcess().map(async (src) => {
-        src = path__default["default"].resolve(src);
+        src = path.resolve(src);
         const
-          srcRelative = path__default["default"].relative(__dirname, src),
-          dest = to + path__default["default"].sep + path__default["default"].basename(src);
+          srcRelative = path.relative(__dirname, src),
+          dest = to + path.sep + path.basename(src);
 
         if (watch) this.addWatchFile(src);
 
         //Read file content
-        const fileContent = await fs__default["default"].promises.readFile(src, "utf-8").catch(error => {
+        const fileContent = await fs.promises.readFile(src, "utf-8").catch(error => {
           console.log(`\x1b[31m\x1B[1m!!! Plugin postcss-amstramgram ERROR !!!: unable to read ${srcRelative} file - ${error}...\x1b[0m`);
         });
 
         //Processing
-        const result = await postcss__default["default"](plugins)
+        const result = await postcss(plugins)
           .process(fileContent, { from: src, to: dest, map: sourceMap ? { inline: false } : false })
           .catch((error) => {
-            if (watch) this.addWatchFile(path__default["default"].resolve(error.file));
+            if (watch) this.addWatchFile(path.resolve(error.file));
             console.log(`\x1b[31m\x1B[1m!!! CSS ERROR !!!: ${error.message}...\x1b[0m`);
           });
 
@@ -137,7 +134,7 @@ var indexModule = (options = {}) => {
           if (Array.isArray(result.messages) && result.messages.length > 0) {
             result.messages
               .filter(msg => msg.hasOwnProperty('type') && msg.type == 'dependency' && msg.hasOwnProperty('file'))
-              .forEach(msg => {if (watch) this.addWatchFile(path__default["default"].resolve(msg.file));});
+              .forEach(msg => {if (watch) this.addWatchFile(path.resolve(msg.file));});
           }
           filesToEmit.set(src, result);
         } else {
@@ -149,16 +146,16 @@ var indexModule = (options = {}) => {
     },
     async generateBundle() {
       //Create destination directory
-      await fs__default["default"].promises.mkdir(to, { recursive: true }).catch(error => {
+      await fs.promises.mkdir(to, { recursive: true }).catch(error => {
         console.log(`\x1b[31m\x1B[1m!!! Plugin postcss-amstramgram ERROR !!!: Fail to create ${to} directory - ${error}...\x1b[0m`);
       });
       //Write the result
       filesToEmit.forEach((result, src) => {
         const
-          srcRelative = path__default["default"].relative(__dirname, src),
-          dest = to + path__default["default"].sep + path__default["default"].basename(src),
-          destRelative = path__default["default"].relative(__dirname, dest);
-        fs__default["default"].writeFile(dest, result.css, error => {
+          srcRelative = path.relative(__dirname, src),
+          dest = to + path.sep + path.basename(src),
+          destRelative = path.relative(__dirname, dest);
+        fs.writeFile(dest, result.css, error => {
           if (error) {
             console.log(`\x1b[31m\x1B[1m!!! Plugin postcss-amstramgram ERROR !!!: Unable to write ${destRelative} file...\x1b[0m`);
           } else {
@@ -166,7 +163,7 @@ var indexModule = (options = {}) => {
           }
         });
         if (sourceMap) {
-          fs__default["default"].writeFile(`${dest}.map`, JSON.stringify(result.map), error => {
+          fs.writeFile(`${dest}.map`, JSON.stringify(result.map), error => {
             if (error) {
               console.log(`\x1b[31m\x1B[1m!!! Plugin postcss-amstramgram ERROR !!!: Fail to write map data for ${srcRelative} file \x1b[22min \x1B[1m${destRelative}.map...\x1b[0m`);
             } else {

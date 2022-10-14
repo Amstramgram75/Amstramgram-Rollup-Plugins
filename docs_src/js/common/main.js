@@ -11,7 +11,9 @@ export default function main() {
    */
   try {
     Array.from(d.querySelectorAll('aside ul.menu a')).filter(a => w.location.toString().indexOf(a.href) != -1)[0].classList.add('selected')
-  } catch (e) { }
+  } catch (e) { 
+    d.querySelector('aside ul.menu a').classList.add('selected')
+  }
 
   /*
     .loaded class is added to html.

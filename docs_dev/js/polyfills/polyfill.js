@@ -1,19 +1,2 @@
-(function () {
-  'use strict';
-
-  (function () {
-    (function(){
-      //https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill
-      if (typeof window.CustomEvent !== "function") {
-        function CustomEvent ( event, params ) {
-          params = params || { bubbles: false, cancelable: false, detail: null };
-          var evt = document.createEvent( 'CustomEvent' );
-          evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
-          return evt;
-         }
-        window.CustomEvent = CustomEvent;
-      }
-    })();
-  }());
-
-})();
+!function(){"use strict";!function(){if("function"!=typeof window.CustomEvent){function t(t,n){n=n||{bubbles:!1,cancelable:!1,detail:null};var e=document.createEvent("CustomEvent");return e.initCustomEvent(t,n.bubbles,n.cancelable,n.detail),e}window.CustomEvent=t}}()}();
+//# sourceMappingURL=polyfill.js.map
