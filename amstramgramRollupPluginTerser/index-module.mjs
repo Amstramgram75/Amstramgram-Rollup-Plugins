@@ -1,18 +1,13 @@
-import codeFrameColumns from "@babel/code-frame"
-import {Worker as JestWorker} from 'jest-worker';
+import { codeFrameColumns } from "@babel/code-frame"
+import { Worker as JestWorker } from 'jest-worker';
 import serialize from "serialize-javascript"
 import { createRequire } from 'module';
 
 
-export default (userOptions = {})  => {
+export default (userOptions = {}) => {
   if (userOptions.sourceMap != null) {
     throw Error(
       "sourceMap option is removed. Now it is inferred from rollup options."
-    );
-  }
-  if (userOptions.sourcemap != null) {
-    throw Error(
-      "sourcemap option is removed. Now it is inferred from rollup options."
     );
   }
   return {
@@ -21,7 +16,7 @@ export default (userOptions = {})  => {
     async renderChunk(code, chunk, outputOptions) {
       if (!this.worker) {
         const require = createRequire(import.meta.url);
-        this.worker = new JestWorker(require.resolve('./transform.cjs') , {
+        this.worker = new JestWorker(require.resolve('./transform.cjs'), {
           numWorkers: userOptions.numWorkers,
         });
         this.numOfBundles = 0;
