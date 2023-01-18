@@ -1,19 +1,14 @@
 'use strict';
 
-var codeFrameColumns = require('@babel/code-frame');
+var codeFrame = require('@babel/code-frame');
 var jestWorker = require('jest-worker');
 var serialize = require('serialize-javascript');
 var module$1 = require('module');
 
-var indexModule = (userOptions = {})  => {
+var indexModule = (userOptions = {}) => {
   if (userOptions.sourceMap != null) {
     throw Error(
       "sourceMap option is removed. Now it is inferred from rollup options."
-    );
-  }
-  if (userOptions.sourcemap != null) {
-    throw Error(
-      "sourcemap option is removed. Now it is inferred from rollup options."
     );
   }
   return {
@@ -22,7 +17,7 @@ var indexModule = (userOptions = {})  => {
     async renderChunk(code, chunk, outputOptions) {
       if (!this.worker) {
         const require$1 = module$1.createRequire((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('index-common.js', document.baseURI).href)));
-        this.worker = new jestWorker.Worker(require$1.resolve('./transform.cjs') , {
+        this.worker = new jestWorker.Worker(require$1.resolve('./transform.cjs'), {
           numWorkers: userOptions.numWorkers,
         });
         this.numOfBundles = 0;
@@ -82,7 +77,7 @@ var indexModule = (userOptions = {})  => {
       } catch (error) {
         const { message, line, col: column } = error;
         console.error(
-          codeFrameColumns(code, { start: { line, column } }, { message })
+          codeFrame.codeFrameColumns(code, { start: { line, column } }, { message })
         );
         throw error;
       } finally {

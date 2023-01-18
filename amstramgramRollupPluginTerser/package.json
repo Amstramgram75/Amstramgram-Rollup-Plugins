@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-terser-amstramgram",
-  "version": "1.0.6",
+  "version": "1.0.3",
   "description": "Fork of Rollup plugin terser for Rollup 3",
   "type": "module",
   "main": "index-module.mjs",
