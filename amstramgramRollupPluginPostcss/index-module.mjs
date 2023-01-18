@@ -124,7 +124,7 @@ export default (options = {}) => {
         const result = await postcss(plugins)
           .process(fileContent, { from: src, to: dest, map: sourceMap ? { inline: false } : false })
           .catch((error) => {
-            if (watch) this.addWatchFile(path.resolve(error.file))
+            if (watch && error.file) this.addWatchFile(path.resolve(error.file))
             console.log(`\x1b[31m\x1B[1m!!! CSS ERROR !!!: ${error.message}...\x1b[0m`)
           })
 
