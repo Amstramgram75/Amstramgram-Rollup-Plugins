@@ -26,8 +26,62 @@
 <p class="text">
   Pick up posthtml plugins you need from <a href="https://posthtml.github.io/posthtml-plugins/" target="_blank">here</a>
   and enjoy...
-</p> 
+</p>
 <h2 id="usage">Usage</h2>
+<p class="text">
+  Imagine a development tree like this :
+</p>
+<div class="tree-structure">
+  <span class="bold orange">src</span>
+  <ul>
+    <li><span class="bold orange">html</span>
+      <ul>
+        <li><span class="bold orange">common</span>
+          <ul>
+            <li>head.html</li>
+            <li>header-aside.html</li>
+            <li>template.html</li>
+          </ul>
+        </li>
+        <li><span class="bold orange">content</span>
+          <ul>
+            <li>css.html</li>
+            <li>html.html</li>
+            <li>index.html</li>
+            <li>watcher.html</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>css.html</li>
+    <li>error.html</li>
+    <li>html.html</li>
+    <li>index.html</li>
+    <li>watcher.html</li>
+  </ul>
+</div>
+<p class="text">
+  Each html file at the root of <em>src</em> calls <em>src/html/common/template.html</em> which includes some other
+  parts...
+</p>
+<div class="code" data-filename="index.html">
+  <pre><code class="language-html">&lt;include src="common/template.html"&gt;
+  {
+    "title" : "Amstramgram Rollup Plugins - A workflow to build website",
+    "description" : "An introduction to processing external HTML and CSS files with Amstramgram Rollup Plugins",
+    "content" : "index"
+  }
+&lt;/include&gt;</code></pre>
+</div>
+<p class="text">
+  The template should grab this information and and put it all together.
+</p>
+<div class="code" data-filename="html/common/template.html">
+  <pre><code class="language-html"><include src="common/template.txt"></include></code></pre>
+</div>
+<p class="text">
+  Let rollup and our plugin do the job :
+</p>
 <div class="code" data-filename="rollup.config.js">
   <pre><code class="language-js">...
 //import rollup-plugin-posthtml-amstramgram from the folder where you downloaded it :
@@ -50,7 +104,7 @@ export default = {
   plugins: [
     ...
     htmlPlugin({
-      jobs: { from: src, to: dist },
+      jobs: { from: 'src', to: 'dist' },
       //Watch src folder if in development
       watch: process.env.BUILD === 'development',
       plugins: [
@@ -108,7 +162,7 @@ export default = {
         The function takes the file name and its full path as arguments and should return a string.<br>
         Example : <br>
         <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: (name, path) => name + 'min'</i><br>
-        will result in :<br> 
+        will result in :<br>
         <i>&nbsp;&nbsp;&nbsp;&nbsp;index.html => index.min.html</i><br>
         If you process only one file, you can simply set :<br>
         <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: 'index.min'</i><br>
@@ -170,7 +224,8 @@ export default = {
 <h2 id="examples">Examples</h2>
 <h3>Basic</h3>
 <p class="text">
-  As already mentioned, by default, all processed files are placed at the root of the destination folder(s) set by the <em>to</em> option of a job.<br>
+  As already mentioned, by default, all processed files are placed at the root of the destination folder(s) set by the
+  <em>to</em> option of a job.<br>
   So, if you work with a tree-structure like this :<br>
 </p>
 <div class="tree-structure">
@@ -215,7 +270,7 @@ export default = {
 }</code></pre>
 </div>
 <p class="text">
- You will get :
+  You will get :
 </p>
 <div class="tree-structure">
   <span class="bold orange">dist</span>
@@ -232,7 +287,8 @@ export default = {
 <div class="line"></div>
 <h3>Keep nested structure</h3>
 <p class="text">
-  If you need to keep the original nested structure of your files, you should consider taking advantage of the job's <em>root</em> property.<br>
+  If you need to keep the original nested structure of your files, you should consider taking advantage of the job's
+  <em>root</em> property.<br>
   Something like below where we also use the <em>rename</em> feature to spice it up a bit :
 </p>
 <div class="code" data-filename="rollup.config.js">
@@ -273,7 +329,9 @@ export default = {
 <h3>Output plugin</h3>
 <p class="text">
   The plugin can be set as an output plugin if you really need it.<br>
-  However, even if the job is indeed done, you will be warned by rollup about using "transform" and "watchChange" hooks if you don't set <a href="https://rollupjs.org/plugin-development/#output-generation-hooks" target="_blank">an output generation hook</a> for the <em>processHook</em> option.   
+  However, even if the job is indeed done, you will be warned by rollup about using "transform" and "watchChange" hooks
+  if you don't set <a href="https://rollupjs.org/plugin-development/#output-generation-hooks" target="_blank">an output
+    generation hook</a> for the <em>processHook</em> option.
 </p>
 <div class="code" data-filename="rollup.config.js">
   <pre><code class="language-js">...
