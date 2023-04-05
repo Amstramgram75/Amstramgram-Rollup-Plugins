@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" class="loading">
+
+<head>
+	<!-- A specific title -->
+	<title>{{ title }}</title>
+	<!-- A specific description -->
+	<meta name="description" content="{{ description }}">
+	<include src="common/head.html"></include>
+</head>
+
+<body>
+	<include src="common/header-aside.html"></include>
+	<div class="content-wrapper">
+		<div class="content">
+			<!-- A specific content -->
+			<include src="content/{{content}}.html"></include>
+		</div>
+	</div>
+	<div class="up"></div>
+	<!-- A specific style : the style of the page about the postcss plugin is originally written in scss-->
+	<link rel="stylesheet" href="css/index{{style}}.css" media="print" onload="this.media='all';">
+	<script type="module" src="js/index.mjs"></script>
+	<script nomodule src="js/noModule/index.js"></script> 
+</body> 
+
+</html>

@@ -1,0 +1,17 @@
+@import "../../scssImports/import-01.scss";
+body {
+  color: $body-bg-color;
+  background-color: $body-color;
+  div {
+    font-family: $main-font;
+    background: $orange;
+    p {
+      color: $red;
+      span {
+        color: $green;
+      }
+    }
+  }
+}
+//scss comment
+/*css comment*/

@@ -1,0 +1,2 @@
+:root{--main-font:Helvetica,sans-serif;--body-color:#c9be9f;--body-bg-color:#121212;--red:#a10304;--green:#308325;--orange:#cb852a}body{background-color:#c9be9f;background-color:var(--body-color);color:#121212;color:var(--body-bg-color)}body div{background:#cb852a;background:var(--orange);font-family:Helvetica,sans-serif;font-family:var(--main-font)}body div p{color:#a10304;color:var(--red)}body div p span{color:#308325;color:var(--green)}
+/*# sourceMappingURL=sub-01.min.css.map */

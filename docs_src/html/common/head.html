@@ -1,6 +1,4 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<meta charset="utf-8">
-<meta name="description" content="Amstramgram Rollup Plugins to process externals HTML and CSS files">
 <meta name="author" content="onfaitdessites.fr">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/ico/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/ico/favicon-32x32.png">
@@ -52,10 +50,17 @@
 	}
 </style>
 <script>
-	if (typeof window.CustomEvent !== "function") {
+	var needRegExpPolyfill = false;
+	//Catch IE regexp error in prism.js
+	try {
+		RegExp('(?<test>a)');
+	} catch (e) {
+		needRegExpPolyfill = true;
+	}
+	if (needRegExpPolyfill || !Array.from || typeof window.CustomEvent !== "function") {
 		var d = document, s = d.createElement('script');
 		s.async = "false";
-		s.src = "js/polyfills/polyfill.js";
+		s.src = "js/polyfills/polyfills.js";
 		d.head.appendChild(s);
 	}
 </script>

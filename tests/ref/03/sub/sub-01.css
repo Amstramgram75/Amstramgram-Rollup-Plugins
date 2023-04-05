@@ -1,0 +1,18 @@
+body {
+  color: #121212;
+  background-color: #c9be9f;
+}
+body div {
+  font-family: Helvetica, sans-serif;
+  background: #cb852a;
+}
+body div p {
+  color: #a10304;
+}
+body div p span {
+  color: #308325;
+}
+
+/*scss comment*/
+/*css comment*/
+/*# sourceMappingURL=sub-01.css.map */

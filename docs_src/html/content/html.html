@@ -3,28 +3,41 @@
 <div class="code copy">
   <pre><code class="language-shellsession">npm i -D rollup-plugin-posthtml-amstramgram</code></pre>
 </div>
+<div class="line"></div>
 <h3>Manually</h3>
 <p class="text">
-  <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins/tree/master/amstramgramRollupPluginPosthtml" target="_blank">Download the plugin</a> in a <em>amstramgramRollupPluginPosthtml</em> folder located at the root of your project.<br>
+  <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins/tree/master/amstramgramRollupPluginPosthtml"
+    target="_blank">Download the plugin</a> in a <em>rollup-plugin-posthtml-amstramgram</em> folder located at the root
+  of your project.<br>
 </p>
+<div class="line margin-top4"></div>
 <h3>Dependencies</h3>
 <div class="text">
   <p>
-    If you have chosen the manual way, install also <a href="https://github.com/posthtml/posthtml" target="_blank">posthtml</a> and <a href="https://github.com/mrmlnc/fast-glob" target="_blank">fast-glob</a>.
+    If you have chosen the manual way, install also <a href="https://github.com/posthtml/posthtml"
+      target="_blank">posthtml</a> and <a href="https://github.com/mrmlnc/fast-glob" target="_blank">fast-glob</a>.
   </p>
 </div>
 <div class="code copy">
   <pre><code class="language-shellsession">npm i -D posthtml fast-glob</code></pre>
 </div>
+<div class="line"></div>
+<h3>Posthtml plugins</h3>
+<p class="text">
+  Pick up posthtml plugins you need from <a href="https://posthtml.github.io/posthtml-plugins/" target="_blank">here</a>
+  and enjoy...
+</p> 
 <h2 id="usage">Usage</h2>
 <div class="code" data-filename="rollup.config.js">
   <pre><code class="language-js">...
 //import rollup-plugin-posthtml-amstramgram from the folder where you downloaded it :
-import htmlPlugin from './amstramgramRollupPluginPosthtml/index-module.mjs'
+import htmlPlugin from './rollup-plugin-posthtml-amstramgram/esm/index.mjs'
 //Or if you have installed it from npm :
 //import htmlPlugin from 'rollup-plugin-posthtml-amstramgram'
 //import posthtml plugins you want to use :
+//https://github.com/posthtml/posthtml-include
 import htmlinclude from 'posthtml-include'
+//https://github.com/posthtml/htmlnano
 import htmlnano from 'htmlnano'
 ...
 
@@ -37,12 +50,14 @@ export default = {
   plugins: [
     ...
     htmlPlugin({
-      from: 'src/',
-      to: 'dist/',
+      jobs: { from: src, to: dist },
+      //Watch src folder if in development
+      watch: process.env.BUILD === 'development',
       plugins: [
         htmlinclude({
           root: 'src/html/'
         }),
+        //Minify if in production
         ...(process.env.BUILD === 'production' ? [htmlnano()] : [])
       ]
     }),
@@ -52,29 +67,54 @@ export default = {
 </div>
 <h2 id="options">Options</h2>
 <div class="options">
-  <h5>from</h5>
+  <h5>jobs</h5>
   <div>
     <p>
-      Either a <em>String</em> or an <em>Array</em> of <em>Strings</em>.
+      A <em>Job</em> or an array of <em>Jobs</em>.<br>
     </p>
     <p>
-      Each element should be a valid <em>glob</em>, or a string pointing to an existing file or directory.<br>
-      See <a href="https://github.com/mrmlnc/fast-glob" target="_blank">here</a> how to.
+      A <em>Job</em> is an object whose properties are :
     </p>
-    <p>
-      If a string points to an existing directory, it will be converted to a glob including all of its files.<br>
-      Eg : <em>docs_src/</em> becomes <em>docs_src/*.*</em><br>
-      However, only files with a <em>htm</em> or <em>html</em> extension will be processed.
-    </p>
-    <p>
-      Note also that all directories listed here will be watched if the <em>watch</em> option is set to <em>true</em> or not explicitly set to <em>false</em> while rollup is in watch mode&nbsp;: this way, <em>Rollup</em> will rebuild each time a new <em>html</em> file is created in those directories.
-    </p>
-  </div>
-  <h5>to</h5>
-  <div>
-    <p>
-      A <em>String</em> pointing to the destination directory.
-    </p>
+    <h6>- from -</h6>
+    <div class="sub-options">
+      <p>
+        Either a <em>String</em> or an <em>Array</em> of <em>Strings</em>.<br>
+        Each element should be a valid <em>glob</em> or a string pointing to an existing file or folder.<br>
+        If the target is a folder, all relevant files at its root will be processed.<br>
+        See <a href="https://github.com/mrmlnc/fast-glob" target="_blank">here</a> if you need details about glob.
+      </p>
+    </div>
+    <h6>- to -</h6>
+    <div class="sub-options">
+      <p>
+        A <em>String</em> (or an <em>Array</em> of <em>Strings</em>) pointing to folder(s) where to put the result.
+      </p>
+    </div>
+    <h6>- root -</h6>
+    <div class="sub-options">
+      <p>
+        A <em>String</em> that sets the reference for the result tree.<br>
+        By default, all processed files are placed at the root of the destination folder(s) defined by the <em>to</em>
+        option.<br>
+        If a directory is set as <em>root</em> option, the files will be placed relatively to it (see below for an <a
+          href="#examples">illustration</a>).<br>
+        (default : <i>undefined</i>)
+      </p>
+    </div>
+    <h6>- rename -</h6>
+    <div class="sub-options">
+      <p>
+        A <em>String</em> or a <em>Function</em> that defines how the resulting file(s) should be named.<br>
+        The function takes the file name and its full path as arguments and should return a string.<br>
+        Example : <br>
+        <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: (name, path) => name + 'min'</i><br>
+        will result in :<br> 
+        <i>&nbsp;&nbsp;&nbsp;&nbsp;index.html => index.min.html</i><br>
+        If you process only one file, you can simply set :<br>
+        <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: 'index.min'</i><br>
+        (default : <i>undefined</i>)<br>
+      </p>
+    </div>
   </div>
   <h5>plugins</h5>
   <div>
@@ -82,13 +122,175 @@ export default = {
       An <em>Array</em> of <a href="https://posthtml.github.io/posthtml-plugins/" target="_blank">posthtml plugins</a>.
     </p>
   </div>
+  <h5>ext</h5>
+  <div>
+    <p>
+      A <em>String</em> or an <em>Array</em> of <em>Strings</em> defining accepted extensions.<br>
+      Only files with one of the listed extension will be processed.<br>
+      Example : <em>ext: 'html'</em><br>
+      Note that, if omitted, the dot will be automatically added.<br>
+      So in the example above, <em>ext: 'html'</em> actually becomes <em>ext: '.html'</em>.<br>
+      (default : <i>['.html', '.htm']</i>)
+    </p>
+  </div>
   <h5>watch</h5>
   <div>
     <p>
-      A <em>Boolean</em> indicating whether the processed files and their dependencies should be watched.<br>
-      If omitted, it follows the <em>rollup watchMode</em>.
+      A <em>Boolean</em> indicating whether folders containing files to process (including their dependencies) should be
+      watched.<br>
+      (default : <i>false</i>)
     </p>
   </div>
+  <h5>processHook</h5>
+  <div>
+    <p>
+      A <em>String</em> that defines the <a href="https://rollupjs.org/plugin-development/#build-hooks"
+        target="_blank">rollup hook</a> used to process the files.<br>
+      Note however that the <em>watch</em> option will be forced to false if you use a hook called after
+      <em>moduleParsed</em> because rollup cannot call the <em>addWatchFile</em> function after the build has
+      finished.<br>
+      (default : <i>"transform"</i>).
+    </p>
+  </div>
+  <h5>verbose</h5>
+  <div>
+    <p>
+      A <em>Boolean</em> that specifies whether messages and notifications should be sent to the terminal.<br>
+      (default : <i>false</i>).
+    </p>
+  </div>
+  <h5>warnOnError</h5>
+  <div>
+    <p>
+      A <em>Boolean</em> that specifies whether warnings should be logged for process errors.<br>
+      (default : <i>true</i>).
+    </p>
+  </div>
+</div>
+<h2 id="examples">Examples</h2>
+<h3>Basic</h3>
+<p class="text">
+  As already mentioned, by default, all processed files are placed at the root of the destination folder(s) set by the <em>to</em> option of a job.<br>
+  So, if you work with a tree-structure like this :<br>
+</p>
+<div class="tree-structure">
+  <span class="bold orange">src</span>
+  <ul>
+    <li><span class="bold orange">html</span>
+      <ul>
+        <li><span class="bold orange">pages</span>
+          <ul>
+            <li>page-01.html</li>
+            <li>page-02.html</li>
+          </ul>
+        </li>
+        <li><span class="bold orange">import</span>
+          <ul>
+            <li>import-01.html</li>
+            <li>import-02.html</li>
+          </ul>
+        </li>
+        <li>index.html</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<p class="text">
+  And if you set the plugin options like that :
+</p>
+<div class="code" data-filename="rollup.config.js">
+  <pre><code class="language-js">...
+export default = {
+  ...
+  plugins: [
+    ...
+    htmlPlugin({
+      jobs: {
+        from: [`src/html/**/*`, `!src/html/import`],
+        to: `dist/html`
+      }
+    }),
+    ...
+  ]
+}</code></pre>
+</div>
+<p class="text">
+ You will get :
+</p>
+<div class="tree-structure">
+  <span class="bold orange">dist</span>
+  <ul>
+    <li><span class="bold orange">html</span>
+      <ul>
+        <li>index.html</li>
+        <li>page-01.html</li>
+        <li>page-02.html</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<div class="line"></div>
+<h3>Keep nested structure</h3>
+<p class="text">
+  If you need to keep the original nested structure of your files, you should consider taking advantage of the job's <em>root</em> property.<br>
+  Something like below where we also use the <em>rename</em> feature to spice it up a bit :
+</p>
+<div class="code" data-filename="rollup.config.js">
+  <pre><code class="language-js">...
+export default = {
+  ...
+  plugins: [
+    ...
+    htmlPlugin({
+      jobs: {
+        from: [`src/html/**/*`, `!src/html/import`],
+        to: `dist`,
+        root: `src`,
+        rename: (name, fullPath) => (fullPath.includes('pages') ? 'my-' : 'the-') + name
+      }
+    }),
+    ...
+  ]
+}</code></pre>
+</div>
+<div class="tree-structure">
+  <span class="bold orange">dist</span>
+  <ul>
+    <li><span class="bold orange">html</span>
+      <ul>
+        <li><span class="bold orange">pages</span>
+          <ul>
+            <li>my-page-01.html</li>
+            <li>my-page-02.html</li>
+          </ul>
+        </li>
+        <li>the-index.html</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<div class="line"></div>
+<h3>Output plugin</h3>
+<p class="text">
+  The plugin can be set as an output plugin if you really need it.<br>
+  However, even if the job is indeed done, you will be warned by rollup about using "transform" and "watchChange" hooks if you don't set <a href="https://rollupjs.org/plugin-development/#output-generation-hooks" target="_blank">an output generation hook</a> for the <em>processHook</em> option.   
+</p>
+<div class="code" data-filename="rollup.config.js">
+  <pre><code class="language-js">...
+export default = {
+  input: `src/js/main.js`,
+  output: {
+    file: `dist/js/main.js`,
+    format: 'esm',
+    plugins: [
+      htmlPlugin({
+        jobs: { from: `src/html/index.html`, to: `dist/html`, rename: `index.min`},
+        processHook: 'writeBundle',
+        plugins: [htmlnano()]
+      })
+    ]
+  },
+}</code></pre>
 </div>
 <p>
 </p>

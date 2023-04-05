@@ -1,11 +1,14 @@
-<!doctype html><html lang="en" class="loading"><head><title>Amstramgram CSS Rollup Plugin</title><meta http-equiv="content-type" content="text/html; charset=UTF-8"><meta charset="utf-8"><meta name="description" content="Amstramgram Rollup Plugins to process externals HTML and CSS files"><meta name="author" content="onfaitdessites.fr"><link rel="apple-touch-icon" sizes="180x180" href="assets/ico/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="assets/ico/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="assets/ico/favicon-16x16.png"><meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0"><style>body,html{background:#121212;height:100%}.loading body{opacity:0;overflow-y:scroll}.loading:after,.loading:before{border-radius:50%;content:"";display:block;height:100px;left:50%;position:fixed;top:50%;width:100px}.loading:before{border:10px solid red;box-sizing:border-box;transform:translate(-50%,-50%)}.loading:after{animation:r 1.5s linear infinite;background:linear-gradient(90deg,#000,rgba(0,0,0,.9) 30%,rgba(0,0,0,.7) 70%,transparent)}@keyframes r{0%{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(1turn)}}</style><script>if("function"!=typeof window.CustomEvent){var d=document,s=d.createElement("script");s.async="false",s.src="js/polyfills/polyfill.js",d.head.appendChild(s)}</script></head><body> <input class="menu-btn" type="checkbox" id="menu-btn" autocomplete="off"><header class="header"> <a href="https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins" class="logo">mstramgram <div> <div class="github"></div> <div> <div class="rollup">ollup </div><div class="plugins">lugins </div> </div> </div></a> </header><aside> <div class="aside"> <ul class="menu"> <li><a href="index.html">INTRODUCTION</a></li> <li><a href="css.html">POSTCSS</a></li> <li><a href="html.html">POSTHTML</a></li> <li><a href="terser.html">TERSER</a></li> <li><a href="watcher.html">WATCHER</a></li> </ul> <label class="menu-icon" for="menu-btn"><span></span></label> </div></aside> <div class="content-wrapper"> <div class="content"> <h2 id="installation">Installation</h2><h3>npm</h3><div class="code copy"> <pre><code class="language-shellsession">npm i -D rollup-plugin-postcss-amstramgram</code></pre> </div><h3>Manually</h3><p class="text"> <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins/tree/master/amstramgramRollupPluginPostcss" target="_blank">Download the plugin</a> in a <em>amstramgramRollupPluginPostcss</em> folder located at the root of your project.<br> </p><h3>Dependencies</h3><div class="text"> <p> If you have chosen the manual way, install also <a href="https://postcss.org/" target="_blank">postcss</a> and <a href="https://github.com/mrmlnc/fast-glob" target="_blank">fast-glob</a>. </p> </div><div class="code copy"> <pre><code class="language-shellsession">npm i -D postcss fast-glob</code></pre> </div><h2 id="usage">Usage</h2><div class="code" data-filename="rollup.config.js"> <pre><code class="language-js">...
+<!doctype html><html lang="en" class="loading"><head><title>Amstramgram PostCSS Rollup Plugin</title><meta name="description" content="An introduction to processing external HTML and CSS files with Amstramgram Rollup Plugins"><meta http-equiv="content-type" content="text/html; charset=UTF-8"><meta name="author" content="onfaitdessites.fr"><link rel="apple-touch-icon" sizes="180x180" href="assets/ico/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="assets/ico/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="assets/ico/favicon-16x16.png"><meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0"><style>body,html{background:#121212;height:100%}.loading body{opacity:0;overflow-y:scroll}.loading:after,.loading:before{border-radius:50%;content:"";display:block;height:100px;left:50%;position:fixed;top:50%;width:100px}.loading:before{border:10px solid red;box-sizing:border-box;transform:translate(-50%,-50%)}.loading:after{animation:r 1.5s linear infinite;background:linear-gradient(90deg,#000,rgba(0,0,0,.9) 30%,rgba(0,0,0,.7) 70%,transparent)}@keyframes r{0%{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(1turn)}}</style><script>var needRegExpPolyfill=!1;try{RegExp("(?<test>a)")}catch(e){needRegExpPolyfill=!0}if(needRegExpPolyfill||!Array.from||"function"!=typeof window.CustomEvent){var d=document,s=d.createElement("script");s.async="false",s.src="js/polyfills/polyfills.js",d.head.appendChild(s)}</script></head><body> <input class="menu-btn" type="checkbox" id="menu-btn"><header class="header"> <a href="https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins" class="logo">mstramgram <div> <div class="github"></div> <div> <div class="rollup">ollup </div><div class="plugins">lugins </div> </div> </div></a> </header><aside> <div class="aside"> <ul class="menu"> <li><a href="index.html">INTRODUCTION</a></li> <li><a href="css.html">POSTCSS</a></li> <li><a href="html.html">POSTHTML</a></li> <li><a href="terser.html">TERSER</a></li> <li><a href="watcher.html">WATCHER</a></li> </ul> <label class="menu-icon" for="menu-btn"><span></span></label> </div></aside> <div class="content-wrapper"> <div class="content"> <h2 id="installation">Installation</h2><h3>npm</h3><div class="code copy"> <pre><code class="language-shellsession">npm i -D rollup-plugin-postcss-amstramgram</code></pre> </div><div class="line"></div><h3>Manually</h3><p class="text"> <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins/tree/master/amstramgramRollupPluginPostcss" target="_blank">Download the plugin</a> in a <em>rollup-plugin-postcss-amstramgram</em> folder located at the root of your project.<br> </p><div class="line margin-top4"></div><h3>Dependencies</h3><div class="text"> <p> If you have chosen the manual way, also install <a href="https://postcss.org/" target="_blank">postcss</a> and <a href="https://github.com/mrmlnc/fast-glob" target="_blank">fast-glob</a>. </p> </div><div class="code copy"> <pre><code class="language-shellsession">npm i -D postcss fast-glob is-plain-object colorette</code></pre> </div><div class="line"></div><h3>Postcss plugins</h3><p class="text"> Pick up postcss plugins you need from <a href="https://github.com/postcss/postcss/blob/main/docs/plugins.md" target="_blank">here</a> or <a href="https://www.npmjs.com/search?q=postcss%20plugin" target="_blank">there</a> and enjoy... </p><h2 id="usage">Usage</h2><div class="code" data-filename="rollup.config.js"> <pre><code class="language-js">...
 //import rollup-plugin-postcss-amstramgram from the folder where you downloaded it :
-import cssPlugin from './amstramgramRollupPluginPostcss/index-module.mjs'
-//Or if you have installed it from npm :
+import cssPlugin from './rollup-plugin-postcss-amstramgram/esm/index.mjs'
+//Or if you have installed it with npm :
 //import cssPlugin from 'rollup-plugin-postcss-amstramgram'
 //import postcss plugins you want to use :
+//https://github.com/postcss/postcss-import
 import postcssImport from 'postcss-import'
+//https://github.com/csstools/postcss-plugins/tree/main/plugin-packs/postcss-preset-env
 import postcssPresetEnv from 'postcss-preset-env'
+//https://github.com/cssnano/cssnano
 import cssnano from 'cssnano'
 ...
 
@@ -18,20 +21,108 @@ export default = {
   plugins: [
     ...
     cssPlugin({
-      from: 'src/css',
-      to: 'dist/css',
-      sourceMap: process.env.BUILD === 'development',
+      jobs: {
+        //Select all files in the src/css directory
+        //including those located in subdirectories
+        //except those contained in the src/css/import folder
+        from: [`src/css/**/*`, `!src/css/import`],
+        to: `dist`,
+        //Processed files will be emitted recursively in the dist folder
+        //eg : 
+        // - src/ccs/main.css => dist/css/main.css
+        // - src/ccs/components/component-01.css => dist/css/components/component-01.css
+        root: `src`
+      },
+      //Watch src/css directory and subdirectories when in development
+      watch: process.env.BUILD === 'development',
+      //Emit source maps when in development
+      sourcemap: process.env.BUILD === 'development',
       plugins: [
         postcssImport(),
         postcssPresetEnv({
-          stage: 1,
-          importFrom: [
-            'src/css/common/const.css'//Needed for css custom properties
-          ]
+          stage: 1
         }),
+        //Minify when in production
         ...(process.env.BUILD === 'production' ? [cssnano()] : [])
       ]
     }),
     ...
   ]
-}</code></pre> </div><h2 id="options">Options</h2><div class="options"> <h5>from</h5> <div> <p> Either a <em>String</em> or an <em>Array</em> of <em>Strings</em>. </p> <p> Each element should be a valid <em>glob</em>, or a string pointing to an existing file or directory.<br> See <a href="https://github.com/mrmlnc/fast-glob" target="_blank">here</a> how to. </p> <p> If a string points to an existing directory, it will be converted to a glob including all of its files.<br> Eg : <em>docs_src/css</em> becomes <em>docs_src/css/*.*</em><br> However, only files with a <em>css</em> extension will be processed. </p> <p> Note also that all directories listed here will be watched if the <em>watch</em> option is set to <em>true</em> or not explicitly set to <em>false</em> while rollup is in watch mode&nbsp;: this way, <em>Rollup</em> will rebuild each time a new <em>css</em> file is created in those directories. </p> </div> <h5>to</h5> <div> <p> A <em>String</em> pointing to the destination directory. </p> </div> <h5>plugins</h5> <div> <p> An <em>Array</em> of <a href="https://github.com/postcss/postcss/blob/main/docs/plugins.md" target="_blank">postcss plugins</a>. </p> </div> <h5>sourceMap</h5> <div> <p> A <em>Boolean</em> indicating whether to generate a <em>sourcemap</em>.<br> If omitted, it follows the <em>rollup watchMode</em>. </p> </div> <h5>watch</h5> <div> <p> A <em>Boolean</em> indicating whether the processed files and their dependencies should be watched.<br> If omitted, it follows the <em>rollup watchMode</em>. </p> </div> </div><p> </p> </div> </div> <div class="up"></div> <link rel="stylesheet" href="css/main.css" media="print" onload="this.media=&quot;all&quot;"> <script type="module" src="js/index.js"></script> --> <script nomodule="" src="js/noModule/index.js"></script> </body></html>
+}</code></pre> </div><h2 id="options">Options</h2><div class="options"> <h5>jobs</h5> <div> <p> A <em>Job</em> or an array of <em>Jobs</em>.<br> </p> <p> A <em>Job</em> is an object whose properties are : </p> <h6>- from -</h6> <div class="sub-options"> <p> Either a <em>String</em> or an <em>Array</em> of <em>Strings</em>.<br> Each element should be a valid <em>glob</em> or a string pointing to an existing file or folder.<br> If the target is a folder, all relevant files at its root will be processed.<br> See <a href="https://github.com/mrmlnc/fast-glob" target="_blank">here</a> if you need details about glob. </p> </div> <h6>- to -</h6> <div class="sub-options"> <p> A <em>String</em> (or an <em>Array</em> of <em>Strings</em>) pointing to folder(s) where to put the result. </p> </div> <h6>- root -</h6> <div class="sub-options"> <p> A <em>String</em> that sets the reference for the result tree.<br> By default, all processed files are placed at the root of the destination folder(s) defined by the <em>to</em> option.<br> If a directory is set as <em>root</em> option, the files will be placed relatively to it (see below for an <a href="#examples">illustration</a>).<br> (default : <i>undefined</i>) </p> </div> <h6>- rename -</h6> <div class="sub-options"> <p> A <em>String</em> or a <em>Function</em> that defines how the resulting file(s) should be named.<br> The function takes the file name and its full path as arguments and should return a string.<br> Example : <br> <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: (name, path) => name + 'min'</i><br> will result in :<br> <i>&nbsp;&nbsp;&nbsp;&nbsp;main.css => main.min.css</i><br> If you process only one file, you can simply set :<br> <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: 'main.min'</i><br> (default : <i>undefined</i>)<br> </p> </div> </div> <h5>plugins</h5> <div> <p> An <em>Array</em> of <a href="https://github.com/postcss/postcss/blob/main/docs/plugins.md" target="_blank">postcss plugins</a>. </p> </div> <h5>ext</h5> <div> <p> A <em>String</em> or an <em>Array</em> of <em>Strings</em> defining accepted extensions.<br> Only files with one of the listed extension will be processed.<br> Example : <em>ext: 'css'</em><br> Note that, if omitted, the dot will be automatically added.<br> So in the example above, <em>ext: 'css'</em> actually becomes <em>ext: '.css'</em>.<br> (default : <i>['.css', '.scss', '.sass']</i>) </p> </div> <h5>sourcemap</h5> <div> <p> A <em>Boolean</em> indicating whether to generate a <em>sourcemap</em>.<br> (default : <i>false</i>) </p> </div> <h5>watch</h5> <div> <p> A <em>Boolean</em> indicating whether folders containing files to process (including their dependencies) should be watched.<br> (default : <i>false</i>) </p> </div> <h5>processHook</h5> <div> <p> A <em>String</em> that defines the <a href="https://rollupjs.org/plugin-development/#build-hooks" target="_blank">rollup hook</a> used to process the files.<br> Note however that the <em>watch</em> option will be forced to false if you use a hook called after <em>moduleParsed</em> because rollup cannot call the <em>addWatchFile</em> function after the build has finished.<br> (default : <i>"transform"</i>). </p> </div> <h5>verbose</h5> <div> <p> A <em>Boolean</em> that specifies whether messages and notifications should be sent to the terminal.<br> (default : <i>false</i>). </p> </div> <h5>warnOnError</h5> <div> <p> A <em>Boolean</em> that specifies whether warnings should be logged for process errors.<br> (default : <i>true</i>). </p> </div> <h5>syntax</h5> <div> <p> An optional <em>Object</em> with parse and stringify passed as option to the postcss process.<br> More info <a href="https://postcss.org/api/#processoptions" target="_blank">here</a>.<br> </p> </div> <h5>parser</h5> <div> <p> Function to generate AST by string passed as option to the postcss process.<br> More info <a href="https://postcss.org/api/#processoptions" target="_blank">here</a>.<br> </p> </div> <h5>stringifier</h5> <div> <p> Class to generate string by AST passed as option to the postcss process.<br> More info <a href="https://postcss.org/api/#processoptions" target="_blank">here</a>.<br> </p> </div> </div><h2 id="examples">Examples</h2><h3>Basic</h3><p class="text"> As already mentioned, by default, all processed files are placed at the root of the destination folder(s) set by the <em>to</em> option of a job.<br> So, if you work with a tree-structure like this :<br> </p><div class="tree-structure"> <span class="bold orange">src</span> <ul> <li><span class="bold orange">css</span> <ul> <li><span class="bold orange">components</span> <ul> <li>component-01.css</li> <li>component-02.css</li> </ul> </li> <li><span class="bold orange">import</span> <ul> <li>import-01.css</li> <li>import-02.css</li> </ul> </li> <li>page-01.css</li> <li>page-02.css</li> </ul> </li> </ul> </div><p class="text"> And if you set the plugin options like that : </p><div class="code" data-filename="rollup.config.js"> <pre><code class="language-js">...
+export default = {
+  ...
+  plugins: [
+    ...
+    cssPlugin({
+      jobs: {
+        from: [`src/css/**/*`, `!src/css/import`],
+        to: `dist/css`
+      }
+    }),
+    ...
+  ]
+}</code></pre> </div><p class="text"> You will get : </p><div class="tree-structure"> <span class="bold orange">dist</span> <ul> <li><span class="bold orange">css</span> <ul> <li>component-01.css</li> <li>component-02.css</li> <li>page-01.css</li> <li>page-02.css</li> </ul> </li> </ul> </div><div class="line"></div><h3>Keep nested structure</h3><p class="text"> If you need to keep the original nested structure of your files, you should consider taking advantage of the job's <em>root</em> property.<br> Something like below where we also use the <em>rename</em> feature to spice it up a bit : </p><div class="code" data-filename="rollup.config.js"> <pre><code class="language-js">...
+export default = {
+  ...
+  plugins: [
+    ...
+    cssPlugin({
+      jobs: {
+        from: [`src/css/**/*`, `!src/css/import`],
+        to: `dist`,
+        root: `src`,
+        rename: (name, fullPath) => (fullPath.includes('components') ? 'my-' : 'the-') + name
+      }
+    }),
+    ...
+  ]
+}</code></pre> </div><div class="tree-structure"> <span class="bold orange">dist</span> <ul> <li><span class="bold orange">css</span> <ul> <li><span class="bold orange">components</span> <ul> <li>my-component-01.css</li> <li>my-component-02.css</li> </ul> </li> <li>the-page-01.css</li> <li>the-page-02.css</li> </ul> </li> </ul> </div><div class="line"></div><h3>SCSS</h3><div class="code" data-filename="rollup.config.js"> <pre><code class="language-js">...
+//https://github.com/csstools/postcss-sass
+import sass from '@csstools/postcss-sass'
+//https://github.com/postcss/postcss-scss
+import scss from 'postcss-scss'
+    
+export default = {
+  ...
+  plugins: [
+    ...
+    cssPlugin({
+      jobs: {
+        from: `src/scss/main.scss`,
+        to: `dist/css`,
+        rename: 'index.css'
+      },
+      parser: scss,
+      plugins: [sass()]
+    }),
+    ...
+  ]
+}</code></pre> </div><div class="code" data-filename="src/scss/main.scss"> <pre><code class="language-scss">$font-stack: Helvetica, sans-serif;
+$primary-color: #333;
+:root {
+  /*Traditional css comment*/
+  //SCSS comment
+  color: $primary-color;
+  font: 100% $font-stack;
+}
+</code></pre> </div><div class="code" data-filename="dist/css/index.css"> <pre><code class="language-css">:root {
+  /*Traditional css comment*/
+  /*SCSS comment*/
+  color: #333;
+  font: 100% Helvetica, sans-serif;
+}
+</code></pre> </div><div class="line"></div><h3>Output plugin</h3><p class="text"> The plugin can be set as an output plugin if you really need it.<br> However, even if the job is indeed done, you will be warned by rollup about using "transform" and "watchChange" hooks if you don't set <a href="https://rollupjs.org/plugin-development/#output-generation-hooks" target="_blank">an output generation hook</a> for the <em>processHook</em> option. </p><div class="code" data-filename="rollup.config.js"> <pre><code class="language-js">...
+export default = {
+  input: `src/js/main.js`,
+  output: {
+    file: `dist/js/main.js`,
+    format: 'esm',
+    plugins: [
+      cssPlugin({
+        jobs: { from: `src/css/main.css`, to: `dist/css`, rename: `main.min`},
+        processHook: 'writeBundle',
+        plugins: [cssnano()]
+      })
+    ]
+  },
+}</code></pre> </div><p> </p> </div> </div> <div class="up"></div> <link rel="stylesheet" href="css/index.css" media="print" onload="this.media=&quot;all&quot;"> <script type="module" src="js/index.mjs"></script> <script nomodule src="js/noModule/index.js"></script> </body></html>

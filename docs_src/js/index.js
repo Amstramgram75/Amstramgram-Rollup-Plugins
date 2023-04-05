@@ -3,6 +3,7 @@ import aside from './common/aside'
 import code from './common/code'
 import Prism from 'prismjs'
 
+
 //Redirect to error.html if the browser does not understand our code...
 window.addEventListener('error', e => {
   const nameModule = window.location.origin + '/js/index.js',
@@ -23,17 +24,13 @@ Prism.languages.insertBefore('javascript', 'constant', {
 //This has to be done before DOM load
 if (window.location.pathname == '/index.html') {
   const myVars = ['src', 'dev', 'prod', 'dest', 'babelModule', 'babelNoModule', 'moduleExport', 'noModuleExport', 'polyfillExport']
+  // const myVars = ['src', 'dev', 'prod', 'dest', 'babelModule', 'babelNoModule', 'moduleExport', 'noModuleExport', 'polyfillExport']
   Prism.languages.insertBefore('javascript', 'constant', {
     'my-vars': {
       pattern: new RegExp("\\b(?:" + myVars.join("|") + ")\\b(?=}?)(?!:)"),
     }
   });
 }
-
-//Prevent Prism to run at startup
-//because we want to add our keywords
-//before it proceeds
-// Prism.manual = true
 
 window.addEventListener("load", function () {
   main()

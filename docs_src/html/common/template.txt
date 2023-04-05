@@ -1,0 +1,27 @@
+&lt;!doctype html&gt;
+&lt;html lang="en" class="loading"&gt;
+
+&lt;head&gt;
+	&lt;!-- A specific title --&gt;
+	&lt;title&gt;{{ title }}&lt;/title&gt;
+	&lt;!-- A specific description --&gt;
+	&lt;meta name="description" content="{{ description }}"&gt;
+	&lt;include src="common/head.html"&gt;&lt;/include&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+	&lt;include src="common/header-aside.html"&gt;&lt;/include&gt;
+	&lt;div class="content-wrapper"&gt;
+		&lt;div class="content"&gt;
+			&lt;!-- A specific content --&gt;
+			&lt;include src="content/{{content}}.html"&gt;&lt;/include&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div class="up"&gt;&lt;/div&gt;
+	&lt;!-- A specific style : the style of the page about the postcss plugin is originally written in scss--&gt;
+	&lt;link rel="stylesheet" href="css/index{{style}}.css" media="print" onload="this.media='all';"&gt;
+	&lt;script type="module" src="js/index.mjs"&gt;&lt;/script&gt;
+	&lt;script nomodule src="js/noModule/index.js"&gt;&lt;/script&gt; 
+&lt;/body&gt; 
+
+&lt;/html&gt;

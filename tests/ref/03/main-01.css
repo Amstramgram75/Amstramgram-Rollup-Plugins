@@ -1,0 +1,17 @@
+/*scss comment*/
+/*css comment*/
+body {
+  color: #c9be9f;
+  background-color: #121212;
+  font-family: Helvetica, sans-serif;
+}
+body div {
+  background: #a10304;
+}
+body div p {
+  color: #308325;
+}
+body div p span {
+  color: #cb852a;
+}
+/*# sourceMappingURL=main-01.css.map */

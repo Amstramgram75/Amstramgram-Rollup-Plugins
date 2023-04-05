@@ -1,0 +1,15 @@
+@import "../cssImports/import-01.css";
+body{
+  color: var(--body-color);
+  background-color: var(--body-bg-color);
+  font-family: var(--main-font);
+  & div {
+    background: var(--red);
+    & p {
+      color: var(--green);
+      & span {
+        color: var(--orange);
+      }
+    }
+  }
+}

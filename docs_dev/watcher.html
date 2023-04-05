@@ -1,10 +1,12 @@
 <!doctype html>
 <html lang="en" class="loading">
-<head>	
-	<title>Amstramgram WATCHER Rollup Plugin</title>
+
+<head>
+	<!-- A specific title -->
+	<title>Amstramgram Watcher Rollup Plugin</title>
+	<!-- A specific description -->
+	<meta name="description" content="An introduction to processing external HTML and CSS files with Amstramgram Rollup Plugins">
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<meta charset="utf-8">
-<meta name="description" content="Amstramgram Rollup Plugins to process externals HTML and CSS files">
 <meta name="author" content="onfaitdessites.fr">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/ico/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/ico/favicon-32x32.png">
@@ -56,16 +58,24 @@
 	}
 </style>
 <script>
-	if (typeof window.CustomEvent !== "function") {
+	var needRegExpPolyfill = false;
+	//Catch IE regexp error in prism.js
+	try {
+		RegExp('(?<test>a)');
+	} catch (e) {
+		needRegExpPolyfill = true;
+	}
+	if (needRegExpPolyfill || !Array.from || typeof window.CustomEvent !== "function") {
 		var d = document, s = d.createElement('script');
 		s.async = "false";
-		s.src = "js/polyfills/polyfill.js";
+		s.src = "js/polyfills/polyfills.js";
 		d.head.appendChild(s);
 	}
 </script>
 </head>
+
 <body>
-	<input class="menu-btn" type="checkbox" id="menu-btn" autocomplete="off">
+	<input class="menu-btn" type="checkbox" id="menu-btn">
 <header class="header">
   <a href="https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins" class="logo">mstramgram <div>
     <div class="github"></div>
@@ -80,23 +90,25 @@
       <li><a href="index.html">INTRODUCTION</a></li>
       <li><a href="css.html">POSTCSS</a></li>
       <li><a href="html.html">POSTHTML</a></li>
-      <li><a href="terser.html">TERSER</a></li>
       <li><a href="watcher.html">WATCHER</a></li>
     </ul>
   <label class="menu-icon" for="menu-btn"><span></span></label>
 </div></aside>
 
-  <div class="content-wrapper">
+	<div class="content-wrapper">
 		<div class="content">
+			<!-- A specific content -->
 			<h2 id="installation">Installation</h2>
 <h3>npm</h3>
 <div class="code copy">
   <pre><code class="language-shellsession">npm i -D rollup-plugin-watcher-amstramgram</code></pre>
 </div>
+<div class="line"></div>
 <h3>Manually</h3>
 <p class="text">
-  <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins/tree/master/amstramgramRollupPluginWatcher" target="_blank">Download the plugin</a> in a <em>amstramgramRollupPluginWatcher</em> folder located at the root of your project.<br>
+  <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins/tree/master/amstramgramRollupPluginWatcher" target="_blank">Download the plugin</a> in a <em>rollup-plugin-watcher-amstramgram</em> folder located at the root of your project.<br>
 </p>
+<div class="line margin-top4"></div>
 <h3>Dependencies</h3>
 <p class="text">
   If you have chosen the manual way, install also <a href="https://github.com/mrmlnc/fast-glob" target="_blank">fast-glob</a>.
@@ -108,7 +120,7 @@
 <div class="code" data-filename="rollup.config.js">
   <pre><code class="language-js">...
 //import rollup-plugin-watcher-amstramgram from the folder where you downloaded it :
-import watcher from './amstramgramRollupPluginWatcher/index-module.mjs'
+import watcher from './rollup-plugin-watcher-amstramgram/esm/index.mjs'
 //Or if you have installed it from npm :
 //import watcher from 'rollup-plugin-watcher-amstramgram'
 ...
@@ -122,8 +134,8 @@ export default = {
   plugins: [
     ...
     watcher( {
-      files: 'dev/assets',
-      verbose: true
+      //Watch the dev/assets folder and all it subdirectories
+      files: 'dev/assets', 
     }),
     ...
   ]
@@ -144,7 +156,15 @@ export default = {
   <h5>verbose</h5>
   <div>
     <p>
-      A <em>Boolean</em> indicating whether to output infos in console (default to <em>false</em>).
+      A <em>Boolean</em> that specifies whether messages and notifications should be sent to the terminal.<br>
+      (default : <i>false</i>).
+    </p>
+  </div>
+  <h5>warnOnError</h5>
+  <div>
+    <p>
+      A <em>Boolean</em> that specifies whether warnings should be logged for process errors.<br>
+      (default : <i>true</i>).
     </p>
   </div>
 </div>
@@ -152,8 +172,10 @@ export default = {
 		</div>
 	</div>
 	<div class="up"></div>
-  <link rel="stylesheet" href="css/main.css" media="print" onload="this.media='all';">
-  <script type="module" src="js/index.js"></script> -->
-  <script nomodule="" src="js/noModule/index.js"></script>
-</body>
-</html>
+	<!-- A specific style : the style of the page about the postcss plugin is originally written in scss-->
+	<link rel="stylesheet" href="css/index.css" media="print" onload="this.media='all';">
+	<script type="module" src="js/index.mjs"></script>
+	<script nomodule="" src="js/noModule/index.js"></script> 
+</body> 
+
+</html> 

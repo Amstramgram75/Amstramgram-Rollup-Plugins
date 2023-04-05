@@ -3,10 +3,12 @@
 <div class="code copy">
   <pre><code class="language-shellsession">npm i -D rollup-plugin-watcher-amstramgram</code></pre>
 </div>
+<div class="line"></div>
 <h3>Manually</h3>
 <p class="text">
-  <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins/tree/master/amstramgramRollupPluginWatcher" target="_blank">Download the plugin</a> in a <em>amstramgramRollupPluginWatcher</em> folder located at the root of your project.<br>
+  <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins/tree/master/amstramgramRollupPluginWatcher" target="_blank">Download the plugin</a> in a <em>rollup-plugin-watcher-amstramgram</em> folder located at the root of your project.<br>
 </p>
+<div class="line margin-top4"></div>
 <h3>Dependencies</h3>
 <p class="text">
   If you have chosen the manual way, install also <a href="https://github.com/mrmlnc/fast-glob" target="_blank">fast-glob</a>.
@@ -18,7 +20,7 @@
 <div class="code" data-filename="rollup.config.js">
   <pre><code class="language-js">...
 //import rollup-plugin-watcher-amstramgram from the folder where you downloaded it :
-import watcher from './amstramgramRollupPluginWatcher/index-module.mjs'
+import watcher from './rollup-plugin-watcher-amstramgram/esm/index.mjs'
 //Or if you have installed it from npm :
 //import watcher from 'rollup-plugin-watcher-amstramgram'
 ...
@@ -32,8 +34,8 @@ export default = {
   plugins: [
     ...
     watcher( {
-      files: 'dev/assets',
-      verbose: true
+      //Watch the dev/assets folder and all it subdirectories
+      files: 'dev/assets', 
     }),
     ...
   ]
@@ -54,7 +56,15 @@ export default = {
   <h5>verbose</h5>
   <div>
     <p>
-      A <em>Boolean</em> indicating whether to output infos in console (default to <em>false</em>).
+      A <em>Boolean</em> that specifies whether messages and notifications should be sent to the terminal.<br>
+      (default : <i>false</i>).
+    </p>
+  </div>
+  <h5>warnOnError</h5>
+  <div>
+    <p>
+      A <em>Boolean</em> that specifies whether warnings should be logged for process errors.<br>
+      (default : <i>true</i>).
     </p>
   </div>
 </div>
