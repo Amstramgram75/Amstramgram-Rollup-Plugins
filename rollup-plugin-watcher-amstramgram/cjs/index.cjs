@@ -6,6 +6,7 @@ var util = require('util');
 
 //UTILS
 const
+  isObject = o => Object.prototype.toString.call(o) === '[object Object]',
   //https://nodejs.org/api/util.html#utilinspectobject-options
   stringify = v => util.inspect(v, { breakLength: Infinity }),
   //Log utilities
@@ -48,6 +49,12 @@ const
  */
 var index = (options = {}) => {
   let { files, verbose = false, warnOnError = true } = options;
+    //OPTIONS CHECK
+  //options is not an object
+  if (!isObject(options)) {
+    if (warnOnError) warn(`I need an object as parameter !\n|  I received ${yellow(stringify(options))}`);
+    return
+  }
   if (typeof files === 'string') {
     files = [files];
     //Warn if files is not an array

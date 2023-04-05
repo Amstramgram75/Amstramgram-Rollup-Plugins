@@ -25,8 +25,10 @@ var util = require('util');
  * @typedef File
  * @type {Object}
  * @property {String} src
+ * @property {Array<String>} paths : array with path.resolve(src) as first item and all the paths of the dependencies
  * @property {Array<String>} dest : array of the processed files path
- * @property {Map} result : map of the results emitted by posthtml for each destination
+ * @property {String} result : posthtml process result
+ * @property {Boolean} toUpdate : pass to true if the file needs to be updated. Reset to false after the new file is written
  */
 
 //UTILS
@@ -72,7 +74,7 @@ const
   //DISPLAY GREEN MESSAGE
   inform = msg => console.log(green(bold(`-- AMSTRAMGRAM-POSTHTML-PLUGIN --\n|  ${msg}`)));
 
-  //If a glob is provided in from option of a job
+//If a glob is provided in from option of a job
 //it will be necessary to monitor the creation/deletion 
 //of files or folders to update the list of files to be processed
 //even if watch option is set to false
@@ -112,6 +114,7 @@ function checkFromTo(opt) {
       return error
     }
   }
+  //No error has been detected
   return ''
 }
 
@@ -158,13 +161,16 @@ function checkJob(job) {
   } else if (job.rename == '') {
     error = `${italic(`"rename"`)} property of job "${italic(toString)}"\n|  can't be a non-empty string.`;
   }
-  //Convert job.from and job.to to array
-  if (typeof job.to == 'string') {
-    job.to = [job.to];
-  }
+  //Convert job.from into array
   if (typeof job.from == 'string') {
     job.from = [job.from];
   }
+  //Convert job.to into array
+  if (typeof job.to == 'string') {
+    job.to = [job.to];
+  }
+  //Ensure that each destination folder ends with /
+  job.to = job.to.map(dest => dest.endsWith('/') ? dest : dest + '/');
   //needToUpdate will pass to true if a glob is detected
   //in a from option
   job.from = job.from.map(f => {
@@ -175,16 +181,17 @@ function checkJob(job) {
       if (fs.lstatSync(f).isDirectory()) {
         needToUpdate = true;
         return f += f.endsWith('/') ? '*' : '/*'
-      //If it's a file, needToUpdate is untouched
+        //If it's a file, needToUpdate is untouched
       } else {
         return f
       }
-    //If f does not exist, it should be a glob
+      //If f does not exist, it should be a glob
     } else {
       needToUpdate = true;
       return f
     }
   });
+  //No error has been detected
   return error
 }
 
@@ -232,7 +239,7 @@ function getProcessedFilePath(name, path, rename) {
  * getProcessedFilesPaths(src, dest, root, rename)
  * @param {String} src source of the file to process
  * @param {Array<String>} dest array of folders to store the processed file
- * @param {Boolean} flatten keep structure
+ * @param {String} root String that sets the reference for the result tree
  * @param {String | Function} rename how to rename the processed file
  * @returns {Array} an array of the processed files path
  * @description : build the dest property of a File object
@@ -416,6 +423,10 @@ function rollupPluginPosthtmlAmstramgram(options) {
   /**
    * getFiles()
    * @returns {Array<File>} array of File objects
+   * @description build the filesToProcess array
+   * Called only once if each item of from points to a file
+   * Updated if one or more items of from points to a directory or is a glob
+   * if a creation or deletion is detected during the watchChange hook
    */
   async function getFiles() {
     const files = [];
@@ -433,12 +444,14 @@ function rollupPluginPosthtmlAmstramgram(options) {
           files.push(
             {
               src: src,
-              dest: getProcessedFilesPaths(src, job.to, job.root, job.rename)
+              dest: getProcessedFilesPaths(src, job.to, job.root, job.rename),
+              toUpdate: true
             }
           );
         });
       }
     }
+    if (files.length == 0 && warnOnError) warn(`No file to process were found`);
     return files
   }
 
@@ -459,19 +472,25 @@ function rollupPluginPosthtmlAmstramgram(options) {
   async function process(rollup) {
     processError = false;
     if (!filesToProcess) filesToProcess = await getFiles();
-    await Promise.all(filesToProcess.map(async (file) => {
+    await Promise.all(filesToProcess.filter(file => file.toUpdate).map(async (file) => {
       //Read file content
       const fileContent = await fs.promises.readFile(file.src, "utf-8").catch(error => {
         if (warnOnError) warn(`unable to read ${italic(file.src)} file.\n|  ${error}`);
         processError = true;
       });
+      //Reset file.paths
+      if (file.paths) file.paths.clear();
+      file.paths = new Set([path.resolve(file.src)]);
 
       if (!processError) {
         const result = await posthtml(plugins)
           .process(fileContent, postHtmlOptions)
           .catch((error) => {
             //If there is an error in a dependency, we have to keep on eye on it
-            if (error.file) watchFolder(path.dirname(error.file));
+            if (error.file) {
+              watchFolder(path.dirname(error.file));
+              file.paths.add(path.resolve(error.file));
+            }
             if (warnOnError) warn(error.message);
             processError = true;
           });
@@ -480,7 +499,10 @@ function rollupPluginPosthtmlAmstramgram(options) {
             //Watch the dependencies
             result.messages
               .filter(msg => msg.hasOwnProperty('type') && msg.type == 'dependency' && msg.hasOwnProperty('file'))
-              .forEach(msg => watchFolder(path.dirname(msg.file)) );
+              .forEach(msg => {
+                watchFolder(path.dirname(msg.file));
+                file.paths.add(path.resolve(msg.file));
+              });
           }
           //Store the result in file.html
           file.html = result.html;
@@ -505,7 +527,7 @@ function rollupPluginPosthtmlAmstramgram(options) {
             if (verbose) {
               if (watch) {
                 notify(`Watching ${italic(getBasePath(folder))} folder.`);
-              } else  {
+              } else {
                 notify(`Watching ${italic(getBasePath(folder))} folder\n|  in case you add or remove an item.`);
               }
             }
@@ -530,6 +552,11 @@ function rollupPluginPosthtmlAmstramgram(options) {
         if (filesToProcess && (foldersToWatch.includes(folder) || foldersToWatch.some(f => folder.startsWith(f + path.sep)))) {
           filesToProcess = undefined;
         }
+      } else {
+        //If id points to a file we have to process, set toUpdate as true
+        filesToProcess.forEach(file => {
+          if (file.paths.has(path.resolve(id))) file.toUpdate = true;
+        });
       }
     },
 
@@ -546,8 +573,10 @@ function rollupPluginPosthtmlAmstramgram(options) {
       if (!processError) {
         //Store the created folders
         const foldersCreated = [];
-        await Promise.all(filesToProcess.map(async (fileToProcess) => {
-          await Promise.all(fileToProcess.dest.map(async (destFile) => {
+        await Promise.all(filesToProcess.filter(file => file.toUpdate).map(async (file) => {
+          //Reset the toUpdate property to false
+          file.toUpdate = false;
+          await Promise.all(file.dest.map(async (destFile) => {
             //Create directory if necessary
             const destFolder = path.dirname(destFile);
             //If destFolder has not been yet created
@@ -556,11 +585,11 @@ function rollupPluginPosthtmlAmstramgram(options) {
               if (!fs.existsSync(destFolder)) fs.mkdirSync(destFolder, { recursive: true });
             }
             //Write the file
-            fs.writeFile(destFile, fileToProcess.html, error => {
+            fs.writeFile(destFile, file.html, error => {
               if (error) {
                 warn.log(`Unable to write ${italic(slash(destFile))} file.\n|  ${error}`);
               } else {
-                if (verbose) inform(`processes ${italic(fileToProcess.src)}\n|  to ${italic(slash(destFile))}`);
+                if (verbose) inform(`processes ${italic(file.src)}\n|  to ${italic(slash(destFile))}`);
               }
             });
           }));

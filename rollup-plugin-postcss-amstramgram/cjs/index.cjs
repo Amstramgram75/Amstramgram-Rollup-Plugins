@@ -80,9 +80,12 @@ var util = require('util');
  * @typedef File
  * @type {Object}
  * @property {String} src
+ * @property {Array<String>} paths : array with path.resolve(src) as first item and all the paths of the dependencies
  * @property {Array<String>} dest : array of the processed files path
  * @property {Map} result : map of the results emitted by postcss for each destination
+ * @property {Boolean} toUpdate : pass to true if the file needs to be updated. Reset to false after the new file is written
  */
+
 
 //UTILS
 const
@@ -167,6 +170,7 @@ function checkFromTo(opt) {
       return error
     }
   }
+  //No error has been detected
   return ''
 }
 
@@ -184,42 +188,46 @@ function checkFromTo(opt) {
  * or a string or a function returning a string.
  */
 function checkJob(job) {
-  let error = '', toString = stringify(job);
+  let toString = stringify(job);
+  // let error = '', toString = stringify(job)
   //First of all, job must be an object
   if (!isObject(job)) {
-    error = `${italic(`"jobs"`)} option must be an object or an array of objects.\n|  I received ${yellow(stringify(job))}.`;
+    return `${italic(`"jobs"`)} option must be an object or an array of objects.\n|  I received ${yellow(stringify(job))}.`
     //job must have a from property
   } else if (!Object.keys(job).includes('from')) {
-    error = `${italic(`"from"`)} property of job "${italic(toString)}" is not set.`;
+    return `${italic(`"from"`)} property of job "${italic(toString)}" is not set.`
     //job must have a to property
   } else if (!Object.keys(job).includes('to')) {
-    error = `${italic(`"to"`)} property of job "${italic(toString)}" is not set.`;
+    return `${italic(`"to"`)} property of job "${italic(toString)}" is not set.`
     //Check if from property is valid
   } else if (checkFromTo(job.from)) {
-    error = `${italic(`"from"`)} property of job "${italic(toString)}"\n|  ${checkFromTo(job.from)}`;
+    return `${italic(`"from"`)} property of job "${italic(toString)}"\n|  ${checkFromTo(job.from)}`
     //Check if to property is valid
   } else if (checkFromTo(job.to)) {
-    error = `${italic(`"to"`)} property of job "${italic(toString)}"\n|  ${checkFromTo(job.to)}`;
+    return `${italic(`"to"`)} property of job "${italic(toString)}"\n|  ${checkFromTo(job.to)}`
     //Check if root property is valid
     //root may be undefined or a non-empty string
   } else if (job.root !== undefined && typeof job.root !== 'string') {
-    error = `${italic(`"root"`)} property of job "${italic(toString)}"\n|  must be a string.\n|  I received ${yellow(stringify(job.root))}.`;
+    return `${italic(`"root"`)} property of job "${italic(toString)}"\n|  must be a string.\n|  I received ${yellow(stringify(job.root))}.`
   } else if (job.root == '') {
-    error = `${italic(`"root"`)} property of job "${italic(toString)}"\n|  can't be a non-empty string.`;
+    return `${italic(`"root"`)} property of job "${italic(toString)}"\n|  can't be a non-empty string.`
     //Check if rename property is valid
     //rename may be undefined or a non-empty string or a function returning a string
   } else if (job.rename !== undefined && typeof job.rename !== 'string' && typeof job.rename !== 'function') {
-    error = `${italic(`"rename"`)} property of job "${italic(toString)}"\n|  must be a string or a function.`;
+    return `${italic(`"rename"`)} property of job "${italic(toString)}"\n|  must be a string or a function.`
   } else if (job.rename == '') {
-    error = `${italic(`"rename"`)} property of job "${italic(toString)}"\n|  can't be a non-empty string.`;
+    return `${italic(`"rename"`)} property of job "${italic(toString)}"\n|  can't be a non-empty string.`
   }
-  //Convert job.from and job.to to array
-  if (typeof job.to == 'string') {
-    job.to = [job.to];
-  }
+  //Convert job.from into array
   if (typeof job.from == 'string') {
     job.from = [job.from];
   }
+  //Convert job.to into array
+  if (typeof job.to == 'string') {
+    job.to = [job.to];
+  }
+  //Ensure that each destination folder ends with a slash
+  job.to = job.to.map(dest => dest.endsWith('/') ? dest : dest + '/');
   //needToUpdate will pass to true if a glob is detected
   //in a from option
   job.from = job.from.map(f => {
@@ -230,17 +238,18 @@ function checkJob(job) {
       if (fs.lstatSync(f).isDirectory()) {
         needToUpdate = true;
         return f += f.endsWith('/') ? '*' : '/*'
-      //If it's a file, needToUpdate is untouched
+        //If it's a file, needToUpdate is untouched
       } else {
         return f
       }
-    //If f does not exist, it should be a glob
+      //If f does not exist, it should be a glob
     } else {
       needToUpdate = true;
       return f
     }
   });
-  return error
+  //No error has been detected
+  return ''
 }
 
 /**
@@ -287,7 +296,7 @@ function getProcessedFilePath(name, path, rename) {
  * getProcessedFilesPaths(src, dest, root, rename)
  * @param {String} src source of the file to process
  * @param {Array<String>} dest array of folders to store the processed file
- * @param {Boolean} flatten keep structure
+ * @param {String} root String that sets the reference for the result tree
  * @param {String | Function} rename how to rename the processed file
  * @returns {Array} an array of the processed files path
  * @description : build the dest property of a File object
@@ -478,6 +487,10 @@ function rollupPluginPostcssAmstramgram(options) {
   /**
    * getFiles()
    * @returns {Array<File>} array of File objects
+   * @description build the filesToProcess array
+   * Called only once if each item of from points to a file
+   * Updated if one or more items of from points to a directory or is a glob
+   * if a creation or deletion is detected during the watchChange hook
    */
   async function getFiles() {
     const files = [];
@@ -496,12 +509,14 @@ function rollupPluginPostcssAmstramgram(options) {
             {
               src: src,
               dest: getProcessedFilesPaths(src, job.to, job.root, job.rename),
-              result: new Map()
+              result: new Map(),
+              toUpdate: true
             }
           );
         });
       }
     }
+    if (files.length == 0 && warnOnError) warn(`No file to process were found`);
     return files
   }
 
@@ -522,12 +537,15 @@ function rollupPluginPostcssAmstramgram(options) {
   async function process(rollup) {
     processError = false;
     if (!filesToProcess) filesToProcess = await getFiles();
-    await Promise.all(filesToProcess.map(async (file) => {
+    await Promise.all(filesToProcess.filter(file => file.toUpdate).map(async (file) => {
       //Read file content
       const fileContent = await fs.promises.readFile(file.src, "utf-8").catch(error => {
         if (warnOnError) warn(`unable to read ${italic(file.src)} file.\n|  ${error}`);
         processError = true;
       });
+      //Reset file.paths
+      if (file.paths) file.paths.clear();
+      file.paths = new Set([path.resolve(file.src)]);
 
       if (!processError) {
         //file.dest is an array of the paths of the files to output
@@ -548,8 +566,10 @@ function rollupPluginPostcssAmstramgram(options) {
             })
             .catch((error) => {
               //If there is an error in a dependency, we have to keep on eye on it
-              if (error.file) watchFolder(path.dirname(error.file));
-              // if (watch && error.file) watchFolder(path.dirname(error.file))
+              if (error.file) {
+                watchFolder(path.dirname(error.file));
+                file.paths.add(path.resolve(error.file));
+              }
               if (warnOnError) warn(error.message);
               processError = true;
             });
@@ -558,8 +578,23 @@ function rollupPluginPostcssAmstramgram(options) {
               //Watch the dependencies
               result.messages
                 .filter(msg => msg.hasOwnProperty('type') && msg.type == 'dependency' && msg.hasOwnProperty('file'))
-                .forEach(msg => watchFolder(path.dirname(msg.file)));
-              // .forEach(msg => { if (watch) watchFolder(path.dirname(msg.file)) })
+                .forEach(msg => {
+                  watchFolder(path.dirname(msg.file));
+                  file.paths.add(path.resolve(msg.file));
+                });
+            }
+            //SCSS Correction : sourceMappingURL is not written at the end of the css file
+            if (sourcemap && !result.css.endsWith('css.map */')) {
+              result.css += `\n/*# sourceMappingURL=${path.basename(dest)}.map */`;
+              //In scss map, links are of the form : "file:///D:/Users/Documents/..."
+              //We can easily translate them into relative paths
+              //but browsers security blocks the opening of the file
+              //in dev tools
+              // result.map._sources._array.forEach((p, id) => {
+              //   if (p.startsWith('file:')) {
+              //     result.map._sources._array[id] = slash(path.relative(dest, p.slice(8)))
+              //   }
+              // })
             }
             //update the file.result map
             file.result.set(id, result);
@@ -583,7 +618,7 @@ function rollupPluginPostcssAmstramgram(options) {
             if (verbose) {
               if (watch) {
                 notify(`Watching ${italic(getBasePath(folder))} folder.`);
-              } else  {
+              } else {
                 notify(`Watching ${italic(getBasePath(folder))} folder\n|  in case you add or remove an item.`);
               }
             }
@@ -609,6 +644,11 @@ function rollupPluginPostcssAmstramgram(options) {
         if (filesToProcess && (foldersToWatch.includes(folder) || foldersToWatch.some(f => folder.startsWith(f + path.sep)))) {
           filesToProcess = undefined;
         }
+      } else {
+        //If id points to a file we have to process, set toUpdate as true
+        filesToProcess.forEach(file => {
+          if (file.paths.has(path.resolve(id))) file.toUpdate = true;
+        });
       }
     },
 
@@ -625,8 +665,10 @@ function rollupPluginPostcssAmstramgram(options) {
       if (!processError) {
         //Store the created folders
         const foldersCreated = [];
-        await Promise.all(filesToProcess.map(async (fileToProcess) => {
-          await Promise.all(fileToProcess.dest.map(async (destFile, id) => {
+        await Promise.all(filesToProcess.filter(file => file.toUpdate).map(async (file) => {
+          //Reset the toUpdate property to false
+          file.toUpdate = false;
+          await Promise.all(file.dest.map(async (destFile, id) => {
             //Create directory if necessary
             const destFolder = path.dirname(destFile);
             //If destFolder has not been yet created
@@ -635,21 +677,20 @@ function rollupPluginPostcssAmstramgram(options) {
               if (!fs.existsSync(destFolder)) fs.mkdirSync(destFolder, { recursive: true });
             }
             //Write the file
-
-            fs.writeFile(destFile, fileToProcess.result.get(sourcemap ? id : 0).css, error => {
+            fs.writeFile(destFile, file.result.get(sourcemap ? id : 0).css, error => {
               if (error) {
                 warn.log(`Unable to write ${italic(slash(destFile))} file.\n|  ${error}`);
               } else {
-                if (verbose) inform(`processes ${italic(fileToProcess.src)}\n|  to ${italic(slash(destFile))}`);
+                if (verbose) inform(`processes ${italic(file.src)}\n|  to ${italic(slash(destFile))}`);
               }
             });
             //And the map
             if (sourcemap) {
-              fs.writeFile(`${destFile}.map`, JSON.stringify(fileToProcess.result.get(id).map), error => {
+              fs.writeFile(`${destFile}.map`, JSON.stringify(file.result.get(id).map), error => {
                 if (error) {
-                  if (warnOnError) warn(`Fail to write map data for ${italic(fileToProcess.src)} file\n|  in ${italic(slash(destFile))}.map\n|  ${error}`);
+                  if (warnOnError) warn(`Fail to write map data for ${italic(file.src)} file\n|  in ${italic(slash(destFile))}.map\n|  ${error}`);
                 } else {
-                  if (verbose) inform(`processes mapping for ${italic(fileToProcess.src)}\n|  in ${italic(slash(destFile))}.map`);
+                  if (verbose) inform(`processes mapping for ${italic(file.src)}\n|  in ${italic(slash(destFile))}.map`);
                 }
               });
             }
