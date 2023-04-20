@@ -523,9 +523,6 @@ function rollupPluginReplaceAmstramgram(options) {
 
   return {
     name: 'replace-amstramgram',
-    resolveId() {
-      return
-    },
     async [watchChangeHook](id, change) {
       //Update the files to process if necessary
       if (needToUpdate && (change.event == 'create' || change.event == 'delete')) {
