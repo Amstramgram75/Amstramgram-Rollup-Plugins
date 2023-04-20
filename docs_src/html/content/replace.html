@@ -1,0 +1,120 @@
+<h2 id="installation">Installation</h2>
+<h3>npm</h3>
+<div class="code copy">
+  <pre><code class="language-shellsession">npm i -D rollup-plugin-replace-amstramgram</code></pre>
+</div>
+<div class="line"></div>
+<h3>Manually</h3>
+<p class="text">
+  <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins/tree/master/rollup-plugin-replace-amstramgram"
+    target="_blank">Download the plugin</a> in a <em>rollup-plugin-replace-amstramgram</em> folder located at the root
+  of your project.<br>
+</p>
+<div class="line margin-top4"></div>
+<h3>Dependencies</h3>
+<p class="text">
+  If you have chosen the manual way, install also <a href="https://github.com/mrmlnc/fast-glob"
+    target="_blank">fast-glob</a>.
+</p>
+<div class="code copy">
+  <pre><code class="language-shellsession">npm i -D fast-glob</code></pre>
+</div>
+<h2 id="usage">Usage</h2>
+<div class="code" data-filename="rollup.config.js">
+  <pre><code class="language-js"><include src="code/replace.txt"></include></code></pre>
+</div>
+<h2 id="options">Options</h2>
+<div class="options">
+  <h5>jobs</h5>
+  <div>
+    <p>
+      A <em>Job</em> or an array of <em>Jobs</em>.<br>
+    </p>
+    <p>
+      A <em>Job</em> is an object whose properties are :
+    </p>
+    <h6>- from -</h6>
+    <div class="sub-options">
+      <p>
+        Either a <em>String</em> or an <em>Array</em> of <em>Strings</em>.<br>
+        Each element should be a valid <em>glob</em> or a string pointing to an existing file or folder.<br>
+        If the target is a folder, all relevant files at its root will be processed.<br>
+        See <a href="https://github.com/mrmlnc/fast-glob" target="_blank">here</a> if you need details about glob.
+      </p>
+    </div>
+    <h6>- to -</h6>
+    <div class="sub-options">
+      <p>
+        A <em>String</em> (or an <em>Array</em> of <em>Strings</em>) pointing to folder(s) where to put the result.
+      </p>
+    </div>
+    <h6>- root -</h6>
+    <div class="sub-options">
+      <p>
+        A <em>String</em> that sets the reference for the result tree.<br>
+        By default, all processed files are placed at the root of the destination folder(s) defined by the <em>to</em>
+        option.<br>
+        If a directory is set as <em>root</em> option, the files will be placed relatively to it (see below for an <a
+          href="#examples">illustration</a>).<br>
+        (default : <i>undefined</i>)
+      </p>
+    </div>
+    <h6>- rename -</h6>
+    <div class="sub-options">
+      <p>
+        A <em>String</em> or a <em>Function</em> that defines how the resulting file(s) should be named.<br>
+        The function takes the file name, its extension and its full path as arguments and should return a string.<br>
+        Example : <br>
+        <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: (name, ext, path) => name + '-replace' + ext</i><br>
+        will result in :<br>
+        <i>&nbsp;&nbsp;&nbsp;&nbsp;index.html => index-replace.html</i><br>
+        <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: (name) => name + '.txt'</i><br>
+        will result in :<br>
+        <i>&nbsp;&nbsp;&nbsp;&nbsp;index.html => index.txt</i><br>
+        If you process only one file, you can simply set :<br>
+        <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: 'index-replace.html'</i><br>
+        (default : <i>undefined</i>)<br>
+      </p>
+    </div>
+  </div>
+  <h5>replace</h5>
+  <div>
+    <p>
+      A <em>ReplaceOption</em> or an array of <em>ReplaceOption</em>.<br>
+      A <em>ReplaceOption</em> is an array whose first element must be a regular expression and the second element a string.
+    </p>
+  </div>
+  <h5>watch</h5>
+  <div>
+    <p>
+      A <em>Boolean</em> indicating whether folders containing files to process should be
+      watched.<br>
+      (default : <i>false</i>)
+    </p>
+  </div>
+  <h5>processHook</h5>
+  <div>
+    <p>
+      A <em>String</em> that defines the <a href="https://rollupjs.org/plugin-development/#build-hooks"
+        target="_blank">rollup hook</a> used to process the files.<br>
+      Note however that the <em>watch</em> option will be forced to false if you use a hook called after
+      <em>moduleParsed</em> because rollup cannot call the <em>addWatchFile</em> function after the build has
+      finished.<br>
+      (default : <i>"buildStart"</i>).
+    </p>
+  </div>
+  <h5>verbose</h5>
+  <div>
+    <p>
+      A <em>Boolean</em> that specifies whether messages and notifications should be sent to the terminal.<br>
+      (default : <i>false</i>).
+    </p>
+  </div>
+  <h5>warnOnError</h5>
+  <div>
+    <p>
+      A <em>Boolean</em> that specifies whether warnings should be logged for process errors.<br>
+      (default : <i>true</i>).
+    </p>
+  </div>
+</div>

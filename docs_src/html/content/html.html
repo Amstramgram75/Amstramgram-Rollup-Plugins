@@ -65,19 +65,13 @@
   parts...
 </p>
 <div class="code" data-filename="index.html">
-  <pre><code class="language-html">&lt;include src="common/template.html"&gt;
-  {
-    "title" : "Amstramgram Rollup Plugins - A workflow to build website",
-    "description" : "An introduction to processing external HTML and CSS files with Amstramgram Rollup Plugins",
-    "content" : "index"
-  }
-&lt;/include&gt;</code></pre>
+  <pre><code class="language-html"><include src="code/index.txt"></include></code></pre>
 </div>
 <p class="text">
   The template should grab this information and and put it all together.
 </p>
 <div class="code" data-filename="html/common/template.html">
-  <pre><code class="language-html"><include src="common/template.txt"></include></code></pre>
+  <pre><code class="language-html"><include src="code/template.txt"></include></code></pre>
 </div>
 <p class="text">
   Let rollup and our plugin do the job :
@@ -161,7 +155,7 @@ export default = {
         A <em>String</em> or a <em>Function</em> that defines how the resulting file(s) should be named.<br>
         The function takes the file name and its full path as arguments and should return a string.<br>
         Example : <br>
-        <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: (name, path) => name + 'min'</i><br>
+        <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: (name, path) => name + '.min'</i><br>
         will result in :<br>
         <i>&nbsp;&nbsp;&nbsp;&nbsp;index.html => index.min.html</i><br>
         If you process only one file, you can simply set :<br>

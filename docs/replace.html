@@ -1,0 +1,44 @@
+<!doctype html><html lang="en" class="loading"><head><title>Amstramgram Replace Rollup Plugin</title><meta name="description" content="Amstramgram Replace Rollup Plugin documentation"><meta http-equiv="content-type" content="text/html; charset=UTF-8"><meta name="author" content="onfaitdessites.fr"><link rel="apple-touch-icon" sizes="180x180" href="assets/ico/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="assets/ico/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="assets/ico/favicon-16x16.png"><meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0"><style>body,html{background:#121212;height:100%}.loading body{opacity:0;overflow-y:scroll}.loading:after,.loading:before{border-radius:50%;content:"";display:block;height:100px;left:50%;position:fixed;top:50%;width:100px}.loading:before{border:10px solid red;box-sizing:border-box;transform:translate(-50%,-50%)}.loading:after{animation:r 1.5s linear infinite;background:linear-gradient(90deg,#000,rgba(0,0,0,.9) 30%,rgba(0,0,0,.7) 70%,transparent)}@keyframes r{0%{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(1turn)}}</style><script>var needRegExpPolyfill=!1;try{RegExp("(?<test>a)")}catch(e){needRegExpPolyfill=!0}if(needRegExpPolyfill||!Array.from||"function"!=typeof window.CustomEvent){var d=document,s=d.createElement("script");s.async="false",s.src="js/polyfills/polyfills.js",d.head.appendChild(s)}</script></head><body> <input class="menu-btn" type="checkbox" id="menu-btn"><header class="header"> <a href="https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins" class="logo">mstramgram <div> <div class="github"></div> <div> <div class="rollup">ollup </div><div class="plugins">lugins </div> </div> </div></a> </header><aside> <div class="aside"> <ul class="menu"> <li><a href="index.html">INTRODUCTION</a></li> <li><a href="css.html">POSTCSS</a></li> <li><a href="html.html">POSTHTML</a></li> <li><a href="replace.html">REPLACE</a></li> <li><a href="watcher.html">WATCHER</a></li> </ul> <label class="menu-icon" for="menu-btn"><span></span></label> </div></aside> <div class="content-wrapper"> <div class="content">  <h2 id="installation">Installation</h2><h3>npm</h3><div class="code copy"> <pre><code class="language-shellsession">npm i -D rollup-plugin-replace-amstramgram</code></pre> </div><div class="line"></div><h3>Manually</h3><p class="text"> <a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins/tree/master/rollup-plugin-replace-amstramgram" target="_blank">Download the plugin</a> in a <em>rollup-plugin-replace-amstramgram</em> folder located at the root of your project.<br> </p><div class="line margin-top4"></div><h3>Dependencies</h3><p class="text"> If you have chosen the manual way, install also <a href="https://github.com/mrmlnc/fast-glob" target="_blank">fast-glob</a>. </p><div class="code copy"> <pre><code class="language-shellsession">npm i -D fast-glob</code></pre> </div><h2 id="usage">Usage</h2><div class="code" data-filename="rollup.config.js"> <pre><code class="language-js">...
+//Replace
+//Here we use the es6 version of the plugin
+import replace from './rollup-plugin-replace-amstramgram/esm/index.mjs'
+//If the plugin has been installed from npm :
+//import replace from 'rollup-plugin-replace-amstramgram'
+
+
+export default = {
+  input: 'src/js/index.js',
+  output: {
+    file: 'dist/js/index.js',
+    format: ...
+  },  
+  plugins: [
+    ...
+    //Replace beginning and ending of tags by html entities :
+    //  &amp; becomes &amp;amp;
+    //  &lt; becomes &amp;lt;
+    //  &gt; becomes &amp;gt;
+    //The resulting text files are then included in final html files with htmlinclude
+    replace({
+      jobs: {
+        from:
+          [
+            `src/index.html`,
+            `src/css.html`,
+            `src/html/common/template.html`,
+            `rollup.config.mjs`,
+            `package.json`
+          ],
+        to: `${src}html/code`,
+        rename: (name) =&gt; name + '.txt'
+      },
+      replace:
+        [
+          [/&amp;/g, '&amp;amp;'],  //  &amp; becomes &amp;amp;
+          [/&lt;/g, '&amp;lt;'],   //  &lt; becomes &amp;lt;
+          [/&gt;/g, '&amp;gt;']    //  &gt; becomes &amp;gt;
+        ]
+    }),
+    ....
+  ]
+}</code></pre> </div><h2 id="options">Options</h2><div class="options"> <h5>jobs</h5> <div> <p> A <em>Job</em> or an array of <em>Jobs</em>.<br> </p> <p> A <em>Job</em> is an object whose properties are : </p> <h6>- from -</h6> <div class="sub-options"> <p> Either a <em>String</em> or an <em>Array</em> of <em>Strings</em>.<br> Each element should be a valid <em>glob</em> or a string pointing to an existing file or folder.<br> If the target is a folder, all relevant files at its root will be processed.<br> See <a href="https://github.com/mrmlnc/fast-glob" target="_blank">here</a> if you need details about glob. </p> </div> <h6>- to -</h6> <div class="sub-options"> <p> A <em>String</em> (or an <em>Array</em> of <em>Strings</em>) pointing to folder(s) where to put the result. </p> </div> <h6>- root -</h6> <div class="sub-options"> <p> A <em>String</em> that sets the reference for the result tree.<br> By default, all processed files are placed at the root of the destination folder(s) defined by the <em>to</em> option.<br> If a directory is set as <em>root</em> option, the files will be placed relatively to it (see below for an <a href="#examples">illustration</a>).<br> (default : <i>undefined</i>) </p> </div> <h6>- rename -</h6> <div class="sub-options"> <p> A <em>String</em> or a <em>Function</em> that defines how the resulting file(s) should be named.<br> The function takes the file name, its extension and its full path as arguments and should return a string.<br> Example : <br> <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: (name, ext, path) => name + '-replace' + ext</i><br> will result in :<br> <i>&nbsp;&nbsp;&nbsp;&nbsp;index.html => index-replace.html</i><br> <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: (name) => name + '.txt'</i><br> will result in :<br> <i>&nbsp;&nbsp;&nbsp;&nbsp;index.html => index.txt</i><br> If you process only one file, you can simply set :<br> <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: 'index-replace.html'</i><br> (default : <i>undefined</i>)<br> </p> </div> </div> <h5>replace</h5> <div> <p> A <em>ReplaceOption</em> or an array of <em>ReplaceOption</em>.<br> A <em>ReplaceOption</em> is an array whose first element must be a regular expression and the second element a string. </p> </div> <h5>watch</h5> <div> <p> A <em>Boolean</em> indicating whether folders containing files to process should be watched.<br> (default : <i>false</i>) </p> </div> <h5>processHook</h5> <div> <p> A <em>String</em> that defines the <a href="https://rollupjs.org/plugin-development/#build-hooks" target="_blank">rollup hook</a> used to process the files.<br> Note however that the <em>watch</em> option will be forced to false if you use a hook called after <em>moduleParsed</em> because rollup cannot call the <em>addWatchFile</em> function after the build has finished.<br> (default : <i>"buildStart"</i>). </p> </div> <h5>verbose</h5> <div> <p> A <em>Boolean</em> that specifies whether messages and notifications should be sent to the terminal.<br> (default : <i>false</i>). </p> </div> <h5>warnOnError</h5> <div> <p> A <em>Boolean</em> that specifies whether warnings should be logged for process errors.<br> (default : <i>true</i>). </p> </div> </div> </div> </div> <div class="up"></div>  <link rel="stylesheet" href="css/index.css" media="print" onload="this.media=&quot;all&quot;"> <script type="module" src="js/index.mjs"></script> <script nomodule src="js/noModule/index.js"></script> </body></html>

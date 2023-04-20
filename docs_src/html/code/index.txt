@@ -1,0 +1,8 @@
+&lt;include src="common/template.html"&gt;
+	{
+		"title" : "Amstramgram Rollup Plugins - A workflow to build website",
+		"description" : "An introduction to processing external HTML and CSS files with Amstramgram Rollup Plugins",
+		"content" : "index",
+		"style" : "" 
+	}
+&lt;/include&gt;

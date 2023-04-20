@@ -1,0 +1,44 @@
+...
+//Replace
+//Here we use the es6 version of the plugin
+import replace from './rollup-plugin-replace-amstramgram/esm/index.mjs'
+//If the plugin has been installed from npm :
+//import replace from 'rollup-plugin-replace-amstramgram'
+
+
+export default = {
+  input: 'src/js/index.js',
+  output: {
+    file: 'dist/js/index.js',
+    format: ...
+  },  
+  plugins: [
+    ...
+    //Replace beginning and ending of tags by html entities :
+    //  &amp; becomes &amp;amp;
+    //  &lt; becomes &amp;lt;
+    //  &gt; becomes &amp;gt;
+    //The resulting text files are then included in final html files with htmlinclude
+    replace({
+      jobs: {
+        from:
+          [
+            `src/index.html`,
+            `src/css.html`,
+            `src/html/common/template.html`,
+            `rollup.config.mjs`,
+            `package.json`
+          ],
+        to: `${src}html/code`,
+        rename: (name) =&gt; name + '.txt'
+      },
+      replace:
+        [
+          [/&amp;/g, '&amp;amp;'],  //  &amp; becomes &amp;amp;
+          [/&lt;/g, '&amp;lt;'],   //  &lt; becomes &amp;lt;
+          [/&gt;/g, '&amp;gt;']    //  &gt; becomes &amp;gt;
+        ]
+    }),
+    ....
+  ]
+}

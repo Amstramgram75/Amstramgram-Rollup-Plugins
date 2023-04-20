@@ -1,8 +1,8 @@
-<include src="common/template.html">
+&lt;include src="common/template.html"&gt;
 	{
 		"title" : "Amstramgram PostCSS Rollup Plugin",
 		"description" : "Amstramgram PostCss Rollup Plugin documentation",
 		"content" : "css" ,
 		"style": "-from-scss"
 	}
-</include> 
+&lt;/include&gt; 

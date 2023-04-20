@@ -106,9 +106,9 @@ const module = {
     noderesolve(),
     commonjs(),
     //Replace beginning and ending of tags by html entities :
-    //  & becomes &amp;
-    //  < becomes &lt;
-    //  > becomes &gt;
+    //  &amp; becomes &amp;amp;
+    //  &lt; becomes &amp;lt;
+    //  &gt; becomes &amp;gt;
     //The resulting text files are then included in final html files with htmlinclude
     replace({
       jobs: {
@@ -121,13 +121,13 @@ const module = {
             `package.json`
           ],
         to: `${src}html/code`,
-        rename: (name) => name + '.txt'
+        rename: (name) =&gt; name + '.txt'
       },
       replace:
         [
-          [/&/g, '&amp;'],  //  & becomes &amp;
-          [/</g, '&lt;'],   //  < becomes &lt;
-          [/>/g, '&gt;']    //  > becomes &gt;
+          [/&amp;/g, '&amp;amp;'],  //  &amp; becomes &amp;amp;
+          [/&lt;/g, '&amp;lt;'],   //  &lt; becomes &amp;lt;
+          [/&gt;/g, '&amp;gt;']    //  &gt; becomes &amp;gt;
         ]
     }),
     html({
@@ -232,14 +232,14 @@ const polyfill = {
 }
 
 //Set up plugins bundles when in production
-const buildPluginsExport = _ => {
+const buildPluginsExport = _ =&gt; {
   const plugins = []
   if (process.env.BUILD === 'production') {
     //Clean production directory before production build
     fsExtra.emptyDirSync(prod)
     //bundle common js versions for each plugin
     //Use fast-glob to find all the rollup-plugin folders
-    fg.sync(['rollup-plugin-*'], { onlyDirectories: true }).forEach(folder => {
+    fg.sync(['rollup-plugin-*'], { onlyDirectories: true }).forEach(folder =&gt; {
       plugins.push({
         input: `${folder}/esm/index.mjs`,
         //Set the dependencies from package.json as external

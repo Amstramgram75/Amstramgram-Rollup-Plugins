@@ -124,7 +124,7 @@ export default = {
         A <em>String</em> or a <em>Function</em> that defines how the resulting file(s) should be named.<br>
         The function takes the file name and its full path as arguments and should return a string.<br>
         Example : <br>
-        <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: (name, path) => name + 'min'</i><br>
+        <i>&nbsp;&nbsp;&nbsp;&nbsp;rename: (name, path) => name + '.min'</i><br>
         will result in :<br> 
         <i>&nbsp;&nbsp;&nbsp;&nbsp;main.css => main.min.css</i><br>
         If you process only one file, you can simply set :<br>
@@ -335,7 +335,7 @@ export default = {
       jobs: {
         from: `src/scss/main.scss`,
         to: `dist/css`,
-        rename: 'index.css'
+        rename: 'main-from-scss'
       },
       parser: scss,
       plugins: [sass()]

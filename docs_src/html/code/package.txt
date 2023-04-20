@@ -2,7 +2,7 @@
   "name": "rollup-plugin-amstramgram",
   "version": "2.0.0",
   "description": "Amstramgram Rollup Plugins repo",
-  "author": "Amstramgram <contact@onfaitdessites.fr>",
+  "author": "Amstramgram &lt;contact@onfaitdessites.fr&gt;",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Amstramgram75/Amstramgram-Rollup-Plugins.git"
@@ -47,6 +47,6 @@
   "browserslist": [
     "defaults",
     "ie 11",
-    "Safari >= 9"
+    "Safari &gt;= 9"
   ]
 }
