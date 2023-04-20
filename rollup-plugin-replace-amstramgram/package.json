@@ -1,5 +1,5 @@
 {
-  "name": "rollup-plugin-posthtml-amstramgram",
+  "name": "rollup-plugin-replace-amstramgram",
   "version": "1.0.0",
   "description": "A Rollup plugin to replace files content with regexp",
   "author": "Amstramgram <contact@onfaitdessites.fr>",
