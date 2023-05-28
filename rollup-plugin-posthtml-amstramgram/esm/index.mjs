@@ -334,8 +334,7 @@ export default function rollupPluginPosthtmlAmstramgram(options) {
     if (warnOnError) warn(`${italic(`"plugins"`)} option must be an array.\n|  I received ${yellow(stringify(plugins))}`)
     return
   } else if (plugins.length == 0) {
-    if (warnOnError) warn(`${italic(`"plugins"`)} option is empty.\n|  I've nothing to do !`)
-    return
+    if (verbose) notify(`${italic(`"plugins"`)} option is empty.\n|  I have nothing to do but copy !`)
   }
   //Check ext option
   //ext must be a non-empty string or an array of non-empty strings

@@ -42,10 +42,8 @@ export interface HtmlOptions extends PostHTML.Options {
   /**
    * Array of posthtml plugins to applied.
    * @default []
-   * scrog,ne
    */
-  //type User = import('./user').User;
-  readonly plugins: PostHTML.Plugin<PostHTML.Node>[];
+  readonly plugins?: PostHTML.Plugin<PostHTML.Node>[];
 
   /**
    * A String or an array of strings defining accepted extensions.
@@ -89,7 +87,7 @@ export interface HtmlOptions extends PostHTML.Options {
  * options is an object with those properties : 
  * - jobs (required) : an object or an array of objects that 
  *    defines where to search for files to process and where to put the results.
- * - plugins (required) : an array of posthtml plugins to applied.
+ * - plugins : an array of posthtml plugins to applied.
  * - ext : a string or an array of strings. 
  *    Only files with one of the listed extension will be processed.
  *    Example : ext: 'html'
