@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-watcher-amstramgram",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Rollup plugin to watch everything you want",
   "author": "Amstramgram <contact@onfaitdessites.fr>",
   "repository": {
@@ -31,6 +31,6 @@
     "fast-glob": "^3.2.12"
   },
   "peerDependencies": {
-    "rollup": "^3.x"
+    "rollup": "^4.x"
   }
 }
